@@ -16,7 +16,7 @@
       background-color: #ffffff;
       color: #1f1933;
       line-height: 1.5;
-      padding: 40px 20px;
+      padding: 32px 16px;
     }
 
     .booking-wrapper {
@@ -28,9 +28,9 @@
       display: inline-block;
       color: #6d4aff;
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 500;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .back-link:hover {
@@ -38,11 +38,11 @@
     }
 
     .booking-header {
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .booking-header h1 {
-      font-size: 2rem;
+      font-size: clamp(1.6rem, 4vw, 2rem);
       font-weight: 700;
       color: #1a152e;
       margin-bottom: 6px;
@@ -53,18 +53,29 @@
       font-size: 0.95rem;
     }
 
+    .schedule-pill {
+      display: inline-block;
+      margin-top: 10px;
+      background-color: #f3effb;
+      color: #6638b6;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
     .booking-card {
       background-color: #ffffff;
       border: 1px solid #eceaf2;
       border-radius: 12px;
-      padding: 32px;
+      padding: 28px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
 
     .booking-form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     .form-row {
@@ -76,7 +87,7 @@
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
 
     label {
@@ -88,14 +99,22 @@
     .helper-text {
       font-size: 0.78rem;
       color: #6e6b7b;
-      margin-top: -2px;
     }
 
+    .error-text {
+      font-size: 0.8rem;
+      color: #c92a2a;
+      font-weight: 500;
+      display: none;
+    }
+
+    /* 16px font-size prevents auto-zoom on mobile Safari/Chrome */
     input,
     select {
       width: 100%;
-      padding: 11px 14px;
-      font-size: 0.95rem;
+      min-height: 46px;
+      padding: 10px 14px;
+      font-size: 16px;
       font-family: inherit;
       color: #1f1933;
       background-color: #ffffff;
@@ -111,6 +130,12 @@
       box-shadow: 0 0 0 3px rgba(102, 56, 182, 0.12);
     }
 
+    select:disabled {
+      background-color: #f6f5fa;
+      color: #8c889c;
+      cursor: not-allowed;
+    }
+
     .btn-submit {
       align-self: flex-start;
       background-color: #6638b6;
@@ -119,7 +144,8 @@
       font-weight: 600;
       border: none;
       border-radius: 8px;
-      padding: 13px 26px;
+      min-height: 48px;
+      padding: 13px 28px;
       cursor: pointer;
       margin-top: 4px;
       transition: background-color 0.2s ease;
@@ -141,13 +167,21 @@
       margin-bottom: 18px;
     }
 
-    @media (max-width: 600px) {
+    /* Mobile Responsiveness */
+    @media (max-width: 640px) {
+      body {
+        padding: 20px 14px;
+      }
+
+      .booking-card {
+        padding: 20px 16px;
+      }
+
       .form-row {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
-      .booking-card {
-        padding: 24px 20px;
-      }
+
       .btn-submit {
         width: 100%;
       }
@@ -161,6 +195,7 @@
     <header class="booking-header">
       <h1>Book an Appointment</h1>
       <p>Fill out the form and our team will confirm your schedule.</p>
+      <span class="schedule-pill">Clinic Hours: Saturday – Thursday • 9:00 AM – 6:00 PM (Closed Fridays)</span>
     </header>
 
     <div class="booking-card">
@@ -172,7 +207,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="full-name">Full Name</label>
-            <input type="text" id="full-name" name="full_name" required>
+            <input type="text" id="full-name" name="full_name" placeholder="Juan Dela Cruz" required>
           </div>
 
           <div class="form-group">
@@ -209,13 +244,16 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="date">Preferred Date</label>
+            <label for="date">Preferred Date (Sat – Thu)</label>
             <input type="date" id="date" name="date" required>
+            <span class="error-text" id="date-error">Clinic is closed on Fridays. Please choose Sat – Thu.</span>
           </div>
 
           <div class="form-group">
-            <label for="time">Preferred Time</label>
-            <input type="time" id="time" name="time" required>
+            <label for="time">Preferred Time (9 AM – 6 PM)</label>
+            <select id="time" name="time" disabled required>
+              <option value="" disabled selected>Select a valid date first</option>
+            </select>
           </div>
         </div>
 
@@ -227,7 +265,52 @@
   <script>
     const phoneInput = document.getElementById('phone');
     const phoneHint = document.getElementById('phone-hint');
+    const dateInput = document.getElementById('date');
+    const dateError = document.getElementById('date-error');
+    const timeSelect = document.getElementById('time');
 
+    // Prevent selecting past dates
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+
+    // Available clinic time slots (9:00 AM to 6:00 PM)
+    const clinicTimeSlots = [
+      { value: "09:00", label: "9:00 AM" },
+      { value: "10:00", label: "10:00 AM" },
+      { value: "11:00", label: "11:00 AM" },
+      { value: "12:00", label: "12:00 PM" },
+      { value: "13:00", label: "1:00 PM" },
+      { value: "14:00", label: "2:00 PM" },
+      { value: "15:00", label: "3:00 PM" },
+      { value: "16:00", label: "4:00 PM" },
+      { value: "17:00", label: "5:00 PM" },
+      { value: "18:00", label: "6:00 PM" }
+    ];
+
+    // Check day of week (0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat)
+    dateInput.addEventListener('change', function () {
+      if (!this.value) return;
+
+      const selectedDate = new Date(this.value + 'T00:00:00');
+      const dayOfWeek = selectedDate.getDay();
+
+      // Block Friday (5)
+      if (dayOfWeek === 5) {
+        dateError.style.display = 'block';
+        this.value = '';
+        timeSelect.disabled = true;
+        timeSelect.innerHTML = '<option value="" disabled selected>Closed on Fridays</option>';
+        return;
+      }
+
+      // Valid day (Sat - Thu): populate 9 AM - 6 PM slots
+      dateError.style.display = 'none';
+      timeSelect.disabled = false;
+      timeSelect.innerHTML = '<option value="" disabled selected>Select a time slot</option>' +
+        clinicTimeSlots.map(slot => `<option value="${slot.label}">${slot.label}</option>`).join('');
+    });
+
+    // Phone number digit limiter
     phoneInput.addEventListener('input', function () {
       let digits = this.value.replace(/\D/g, '');
       if (digits.startsWith('09')) {
@@ -243,7 +326,7 @@
       this.value = digits;
     });
 
-    // Save booking to localStorage so it appears in admin.html
+    // Submit booking & sync with admin.html
     document.getElementById('booking-form').addEventListener('submit', function (e) {
       e.preventDefault();
 
@@ -251,8 +334,8 @@
       const phone = document.getElementById('phone').value.trim();
       const email = document.getElementById('email').value.trim();
       const service = document.getElementById('service').value;
-      const date = document.getElementById('date').value;
-      const time = document.getElementById('time').value;
+      const date = dateInput.value;
+      const time = timeSelect.value;
 
       const appointments = JSON.parse(localStorage.getItem('tsdc_appointments') || '[]');
       appointments.unshift({
@@ -267,7 +350,6 @@
       });
       localStorage.setItem('tsdc_appointments', JSON.stringify(appointments));
 
-      // Also save to patient list if not existing
       const patients = JSON.parse(localStorage.getItem('tsdc_patients') || '[]');
       const exists = patients.some(p => p.name.toLowerCase() === fullName.toLowerCase() || p.phone === phone);
       if (!exists) {
@@ -285,6 +367,8 @@
 
       document.getElementById('success-banner').style.display = 'block';
       this.reset();
+      timeSelect.disabled = true;
+      timeSelect.innerHTML = '<option value="" disabled selected>Select a valid date first</option>';
       phoneHint.textContent = 'Mobile: 11 digits (09...) | Landline: 10 digits (02...)';
     });
   </script>
