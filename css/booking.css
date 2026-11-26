@@ -16,11 +16,13 @@ body{
   margin:0;
   background:var(--bg);
   color:var(--ink);
-  font:400 16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.5;
 }
 
 /* Centering */
-.page{min-height:100vh;display:flex;justify-content:center;padding:48px 24px}
+.page{min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:48px 24px}
 .wrap{width:100%;max-width:600px}
 
 a{color:var(--purple)}
@@ -40,15 +42,16 @@ h1{margin:0 0 8px;font-size:2rem;line-height:1.2}
 form{display:flex;flex-direction:column;gap:20px}
 .field{display:flex;flex-direction:column}
 label,legend{font-weight:600;font-size:.95rem;margin-bottom:6px;padding:0}
+.optional{font-weight:400;color:var(--mute)}
 
 input[type=text],
 input[type=tel],
 input[type=email],
 input[type=date],
 input[type=time],
-select{
+select,
+textarea{
   width:100%;
-  height:48px;
   border:1.5px solid var(--field);
   border-radius:10px;
   padding:0 14px;
@@ -56,6 +59,13 @@ select{
   color:var(--ink);
   background:#fff;
 }
+input[type=text],
+input[type=tel],
+input[type=email],
+input[type=date],
+input[type=time],
+select{height:48px}
+textarea{padding:12px 14px;min-height:96px;resize:vertical}
 
 .hint{margin:6px 0 0;font-size:.875rem;color:var(--mute)}
 .error{margin:6px 0 0;font-size:.875rem;color:var(--error);font-weight:500}
@@ -83,22 +93,26 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 button{
   height:52px;
   border-radius:12px;
-  font:600 1.05rem inherit;
   font-family:inherit;
+  font-size:1.05rem;
+  font-weight:600;
   cursor:pointer;
   padding:0 20px;
 }
 .primary{border:0;background:var(--purple);color:#fff}
 .primary:hover{background:var(--purple-dark)}
 .secondary{border:1.5px solid var(--purple);background:#fff;color:var(--purple)}
+.full{width:100%}
 .note{margin:0;text-align:center;font-size:.875rem;color:var(--mute)}
 
 /* Keyboard focus */
 :focus-visible{outline:3px solid #1D4ED8;outline-offset:2px}
 
 /* Review and success popups */
-dialog{border:0;border-radius:20px;padding:28px;max-width:520px;width:calc(100% - 32px)}
+dialog{border:0;border-radius:20px;padding:28px;max-width:520px;width:calc(100% - 32px);color:var(--ink)}
 dialog::backdrop{background:rgba(42,26,74,.55)}
+dialog h2{margin:0}
+.done-text{margin:8px 0 24px;color:var(--mute)}
 dl{margin:16px 0 24px;display:grid;grid-template-columns:auto 1fr;gap:8px 16px}
 dt{color:var(--mute)}
 dd{margin:0;font-weight:600;overflow-wrap:anywhere}
