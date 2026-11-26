@@ -20,7 +20,7 @@
     </p>
 
     <div class="booking-card">
-      <form class="booking-form" id="bookingForm">
+      <form class="booking-form" id="bookingForm" novalidate>
 
         <div class="form-row">
           <div class="form-group">
@@ -56,37 +56,96 @@
           </div>
           <div class="form-group">
             <label for="time">Preferred Time</label>
-            <select id="time" required>
-              <option value="">Select a time slot</option>
-              <option value="09:00">9:00 AM</option>
-              <option value="10:00">10:00 AM</option>
-              <option value="11:00">11:00 AM</option>
-              <option value="13:00">1:00 PM</option>
-              <option value="14:00">2:00 PM</option>
-              <option value="15:00">3:00 PM</option>
-              <option value="16:00">4:00 PM</option>
-              <option value="17:00">5:00 PM</option>
-            </select>
+            <input type="time" id="time" required>
           </div>
         </div>
 
-        <div class="form-message" id="formMessage"></div>
+        <!-- Notification preference (Option A: selectable cards) -->
+        <fieldset class="form-group notify-group">
+          <legend>How should we notify you?</legend>
+          <div class="notify-options">
+            <label class="notify-option">
+              <input type="radio" name="notifyVia" value="SMS">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l1.3-3.9a9 8 0 1 1 3.4 2.9l-4.7 1"/><path d="M12 12v.01M8 12v.01M16 12v.01"/></svg>
+              <span><strong>SMS</strong><small>Text message</small></span>
+            </label>
+            <label class="notify-option">
+              <input type="radio" name="notifyVia" value="Email" checked>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6l9-6"/></svg>
+              <span><strong>Email</strong><small>Inbox</small></span>
+            </label>
+            <label class="notify-option">
+              <input type="radio" name="notifyVia" value="Both">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>
+              <span><strong>Both</strong><small>SMS and email</small></span>
+            </label>
+          </div>
+          <p class="field-hint">We'll send your confirmation and any schedule changes this way. SMS needs a mobile number (09XXXXXXXXX).</p>
+        </fieldset>
 
-        <button type="submit" class="btn btn-filled" id="submitBtn">Submit Booking</button>
+        <div class="form-message" id="formMessage" role="alert"></div>
+
+        <button type="submit" class="btn btn-filled btn-submit" id="submitBtn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <path d="M16 3v4M8 3v4M3 11h18M9 16l2 2 4-4"/>
+          </svg>
+          Review Booking
+        </button>
+        <p class="submit-hint">You'll be able to check your details before we send them.</p>
       </form>
     </div>
   </main>
+
+  <!-- Review / confirmation modal -->
+  <div class="modal-backdrop" id="reviewModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+      <h2 id="reviewTitle">Please review your booking</h2>
+      <p class="modal-sub">Make sure everything is correct before confirming.</p>
+
+      <dl class="review-list">
+        <div><dt>Full name</dt><dd id="rvName"></dd></div>
+        <div><dt>Phone</dt><dd id="rvPhone"></dd></div>
+        <div><dt>Email</dt><dd id="rvEmail"></dd></div>
+        <div><dt>Service</dt><dd id="rvService"></dd></div>
+        <div><dt>Date</dt><dd id="rvDate"></dd></div>
+        <div><dt>Time</dt><dd id="rvTime"></dd></div>
+        <div><dt>Notify me by</dt><dd id="rvNotify"></dd></div>
+      </dl>
+
+      <label class="confirm-check">
+        <input type="checkbox" id="confirmCheck">
+        <span>I confirm that the information above is correct.</span>
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-edit" id="editBtn">Edit details</button>
+        <button type="button" class="btn-confirm" id="confirmBtn" disabled>Confirm Booking</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     var form = document.getElementById('bookingForm');
     var message = document.getElementById('formMessage');
     var dateInput = document.getElementById('date');
-    var timeSelect = document.getElementById('time');
     var phoneInput = document.getElementById('phone');
     var submitBtn = document.getElementById('submitBtn');
 
-    // Hindi pwedeng pumili ng nakaraang petsa
-    var today = new Date().toISOString().split('T')[0];
+    var modal = document.getElementById('reviewModal');
+    var confirmCheck = document.getElementById('confirmCheck');
+    var confirmBtn = document.getElementById('confirmBtn');
+    var editBtn = document.getElementById('editBtn');
+
+    // Holds the details being reviewed until the patient confirms
+    var pendingBooking = null;
+
+    // Hindi pwedeng pumili ng nakaraang petsa (gamit ang local date, hindi UTC)
+    var now = new Date();
+    var today = now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0');
     dateInput.setAttribute('min', today);
 
     // Numbers lang ang pwede i-type at hanggang 11 digits max
@@ -106,98 +165,176 @@
       }
     }
 
-    // I-update ang available time slots kapag pumili ng date ang pasyente
-    function updateAvailableSlots() {
-      var selectedDate = dateInput.value;
-      var bookings = [];
-      try {
-        bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-      } catch (err) {
-        bookings = [];
-      }
-
-      // I-reset lahat ng options
-      Array.prototype.forEach.call(timeSelect.options, function (opt) {
-        if (!opt.value) return;
-        var baseLabel = opt.textContent.replace(' (Booked)', '');
-        var isTaken = selectedDate && bookings.some(function (b) {
-          return b.date === selectedDate && b.time === opt.value && b.status !== 'Cancelled';
-        });
-
-        opt.disabled = isTaken;
-        opt.textContent = isTaken ? baseLabel + ' (Booked)' : baseLabel;
+    // Helper: check kung may naka-book na sa eksaktong date at time (maliban sa Cancelled)
+    function isSlotTaken(selectedDate, selectedTime) {
+      var bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+      return bookings.some(function (b) {
+        return b.date === selectedDate && b.time === selectedTime && b.status !== 'Cancelled';
       });
+    }
 
-      if (timeSelect.selectedOptions[0] && timeSelect.selectedOptions[0].disabled) {
-        timeSelect.value = '';
-      }
+    function showError(text) {
+      message.className = 'form-message error';
+      message.textContent = text;
+    }
+
+    function getNotifyChoice() {
+      return document.querySelector('input[name="notifyVia"]:checked').value;
+    }
+
+    function formatDate(value) {
+      var parts = value.split('-');
+      var d = new Date(parts[0], parts[1] - 1, parts[2]);
+      return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function formatTime(value) {
+      var parts = value.split(':');
+      var d = new Date(2000, 0, 1, parts[0], parts[1]);
+      return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     }
 
     // Real-time check habang pumipili pa lang ng date ang pasyente
     dateInput.addEventListener('change', function () {
       var blocked = getBlockedDate(dateInput.value);
       if (blocked) {
-        message.className = 'form-message error';
-        message.textContent = 'Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.';
+        showError('Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.');
         submitBtn.disabled = true;
-        timeSelect.disabled = true;
       } else {
         message.className = 'form-message';
         message.textContent = '';
         submitBtn.disabled = false;
-        timeSelect.disabled = false;
-        updateAvailableSlots();
       }
     });
 
+    // Modal open / close
+    function openModal() {
+      confirmCheck.checked = false;
+      confirmBtn.disabled = true;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+      editBtn.focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      submitBtn.focus();
+    }
+
+    confirmCheck.addEventListener('change', function () {
+      confirmBtn.disabled = !confirmCheck.checked;
+    });
+
+    editBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+
+    // STEP 1: Validate, then show the review window (hindi pa nase-save dito)
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
       var phoneVal = phoneInput.value.trim();
-      var isMobile = /^09\d{9}$/.test(phoneVal);
-      var isLandline = /^(0\d{7,9}|\d{7,8})$/.test(phoneVal);
+      var isMobile = /^09\d{9}$/.test(phoneVal);       // 11 digits starting with 09
+      var isLandline = /^(0\d{7,9}|\d{7,8})$/.test(phoneVal); // 7 to 10 digits landline
 
       if (!isMobile && !isLandline) {
-        message.className = 'form-message error';
-        message.textContent = 'Please enter a valid 11-digit mobile number (09XXXXXXXXX) or landline number.';
+        showError('Please enter a valid 11-digit mobile number (09XXXXXXXXX) or landline number.');
+        phoneInput.focus();
+        return;
+      }
+
+      var notifyVia = getNotifyChoice();
+
+      // Ang SMS ay mobile number lang ang pwede
+      if ((notifyVia === 'SMS' || notifyVia === 'Both') && !isMobile) {
+        showError('SMS notifications need a mobile number (09XXXXXXXXX). Enter a mobile number or choose Email.');
         phoneInput.focus();
         return;
       }
 
       var selectedDate = dateInput.value;
-      var selectedTime = timeSelect.value;
+      var selectedTime = document.getElementById('time').value;
 
       // 1. Check kung naka-block ang date sa Admin Panel
       var blocked = getBlockedDate(selectedDate);
       if (blocked) {
-        message.className = 'form-message error';
-        message.textContent = 'Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.';
+        showError('Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.');
         return;
       }
 
+      // 2. Check kung may naka-book na sa eksaktong date at time
       try {
-        var bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        if (isSlotTaken(selectedDate, selectedTime)) {
+          showError('That time slot is already booked. Please select a different time or date.');
+          return;
+        }
+      } catch (err) {
+        showError('Sorry, something went wrong. Please try again.');
+        return;
+      }
 
-        // 2. Check kung may naka-book na sa eksaktong date at time
-        var isTaken = bookings.some(function (b) {
-          return b.date === selectedDate && b.time === selectedTime && b.status !== 'Cancelled';
-        });
+      pendingBooking = {
+        name: document.getElementById('name').value.trim(),
+        phone: phoneVal,
+        email: document.getElementById('email').value.trim(),
+        service: document.getElementById('service').value,
+        date: selectedDate,
+        time: selectedTime,
+        notifyVia: notifyVia
+      };
 
-        if (isTaken) {
-          message.className = 'form-message error';
-          message.textContent = 'That time slot is already booked. Please select a different time or date.';
-          updateAvailableSlots();
+      message.className = 'form-message';
+      message.textContent = '';
+
+      // textContent ang gamit para ligtas sa kahit anong i-type ng pasyente
+      document.getElementById('rvName').textContent = pendingBooking.name;
+      document.getElementById('rvPhone').textContent = pendingBooking.phone;
+      document.getElementById('rvEmail').textContent = pendingBooking.email;
+      document.getElementById('rvService').textContent = pendingBooking.service;
+      document.getElementById('rvDate').textContent = formatDate(pendingBooking.date);
+      document.getElementById('rvTime').textContent = formatTime(pendingBooking.time);
+      document.getElementById('rvNotify').textContent = pendingBooking.notifyVia === 'Both' ? 'SMS and email' : pendingBooking.notifyVia;
+
+      openModal();
+    });
+
+    // STEP 2: Patient confirmed, i-save na ang booking
+    confirmBtn.addEventListener('click', function () {
+      if (!pendingBooking || !confirmCheck.checked) return;
+
+      try {
+        // Check ulit, baka may nakakuha na ng slot habang nagre-review
+        if (isSlotTaken(pendingBooking.date, pendingBooking.time)) {
+          closeModal();
+          showError('That time slot was just booked. Please select a different time or date.');
           return;
         }
 
+        var bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+
         var booking = {
           id: Date.now(),
-          name: document.getElementById('name').value.trim(),
-          phone: phoneVal,
-          email: document.getElementById('email').value.trim(),
-          service: document.getElementById('service').value,
-          date: selectedDate,
-          time: selectedTime,
+          name: pendingBooking.name,
+          phone: pendingBooking.phone,
+          email: pendingBooking.email,
+          service: pendingBooking.service,
+          date: pendingBooking.date,
+          time: pendingBooking.time,
+          notifyVia: pendingBooking.notifyVia,
           status: 'Pending',
           createdAt: new Date().toLocaleString()
         };
@@ -205,16 +342,20 @@
         bookings.push(booking);
         localStorage.setItem('bookings', JSON.stringify(bookings));
 
+        closeModal();
         message.className = 'form-message success';
         message.textContent = 'Thank you, ' + booking.name + '! Your booking has been submitted. We will confirm it soon.';
         form.reset();
-        updateAvailableSlots();
+        pendingBooking = null;
+        submitBtn.disabled = false;
+        message.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } catch (err) {
-        message.className = 'form-message error';
-        message.textContent = 'Sorry, something went wrong. Please try again.';
+        closeModal();
+        showError('Sorry, something went wrong. Please try again.');
       }
     });
   </script>
 
 </body>
 </html>
+
