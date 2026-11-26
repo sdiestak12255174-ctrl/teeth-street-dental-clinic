@@ -1,0 +1,290 @@
+/* Admin modules - Dashboard, Appointments, Patients */
+/* Gumagamit din ng mga class sa booking.css (.page-wide, .booking-card, .table-wrap, .bookings-table, .status, .action-btn, .form-group) */
+
+/* Header ng admin */
+.admin-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e8e0f2;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 18px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: var(--purple-main);
+}
+
+.tab-btn.active {
+  color: var(--purple-main);
+  border-bottom-color: var(--purple-main);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* Dashboard: stat cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background-color: var(--white);
+  border: 1px solid #e8e0f2;
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+
+.stat-number {
+  font-family: var(--font-heading);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--purple-main);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-gray);
+  margin-top: 4px;
+}
+
+/* Dashboard: reports */
+.report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.report-card {
+  background-color: var(--white);
+  border: 1px solid #e8e0f2;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.report-card h3 {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  color: var(--text-dark);
+  margin-bottom: 14px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 28px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--text-gray);
+}
+
+.bar-track {
+  background-color: var(--purple-light);
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  background-color: var(--purple-main);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.bar-value {
+  text-align: right;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.today-list {
+  font-size: 13px;
+  color: var(--text-gray);
+}
+
+.today-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #efe8f7;
+}
+
+.today-list li:last-child {
+  border-bottom: none;
+}
+
+/* Toolbar: search, filter, buttons */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.toolbar input,
+.toolbar select {
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 9px 12px;
+  border: 1px solid #d9cdea;
+  border-radius: 8px;
+  background-color: var(--white);
+  color: var(--text-dark);
+}
+
+.toolbar input:focus,
+.toolbar select:focus {
+  outline: 2px solid var(--purple-main);
+  outline-offset: 1px;
+}
+
+.toolbar .grow {
+  flex: 1;
+  min-width: 180px;
+}
+
+.toolbar .btn {
+  padding: 8px 18px;
+  font-size: 13px;
+}
+
+/* Mga dagdag na status */
+.status.completed {
+  background-color: #e3ecfb;
+  color: #1d4a9a;
+}
+
+.status.cancelled {
+  background-color: #fdeaea;
+  color: #a12b2b;
+}
+
+/* Modal (para sa Add / Edit) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(40, 24, 63, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 200;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  color: var(--text-dark);
+  margin-bottom: 16px;
+}
+
+.modal .booking-form {
+  gap: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.modal-actions .btn {
+  padding: 9px 20px;
+  font-size: 13px;
+}
+
+/* Patient history */
+.history-list {
+  font-size: 12px;
+  color: var(--text-gray);
+  line-height: 1.7;
+  white-space: normal;
+}
+
+.bookings-table td.wrap {
+  white-space: normal;
+  min-width: 180px;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .report-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .bar-row {
+    grid-template-columns: 90px 1fr 24px;
+  }
+
+  .tab-btn {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .modal {
+    padding: 22px 18px;
+  }
+}
