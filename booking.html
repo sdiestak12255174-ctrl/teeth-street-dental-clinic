@@ -56,7 +56,17 @@
           </div>
           <div class="form-group">
             <label for="time">Preferred Time</label>
-            <input type="time" id="time" required>
+            <select id="time" required>
+              <option value="">Select a time slot</option>
+              <option value="09:00">9:00 AM</option>
+              <option value="10:00">10:00 AM</option>
+              <option value="11:00">11:00 AM</option>
+              <option value="13:00">1:00 PM</option>
+              <option value="14:00">2:00 PM</option>
+              <option value="15:00">3:00 PM</option>
+              <option value="16:00">4:00 PM</option>
+              <option value="17:00">5:00 PM</option>
+            </select>
           </div>
         </div>
 
@@ -71,6 +81,7 @@
     var form = document.getElementById('bookingForm');
     var message = document.getElementById('formMessage');
     var dateInput = document.getElementById('date');
+    var timeSelect = document.getElementById('time');
     var phoneInput = document.getElementById('phone');
     var submitBtn = document.getElementById('submitBtn');
 
@@ -95,6 +106,33 @@
       }
     }
 
+    // I-update ang available time slots kapag pumili ng date ang pasyente
+    function updateAvailableSlots() {
+      var selectedDate = dateInput.value;
+      var bookings = [];
+      try {
+        bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+      } catch (err) {
+        bookings = [];
+      }
+
+      // I-reset lahat ng options
+      Array.prototype.forEach.call(timeSelect.options, function (opt) {
+        if (!opt.value) return;
+        var baseLabel = opt.textContent.replace(' (Booked)', '');
+        var isTaken = selectedDate && bookings.some(function (b) {
+          return b.date === selectedDate && b.time === opt.value && b.status !== 'Cancelled';
+        });
+
+        opt.disabled = isTaken;
+        opt.textContent = isTaken ? baseLabel + ' (Booked)' : baseLabel;
+      });
+
+      if (timeSelect.selectedOptions[0] && timeSelect.selectedOptions[0].disabled) {
+        timeSelect.value = '';
+      }
+    }
+
     // Real-time check habang pumipili pa lang ng date ang pasyente
     dateInput.addEventListener('change', function () {
       var blocked = getBlockedDate(dateInput.value);
@@ -102,10 +140,13 @@
         message.className = 'form-message error';
         message.textContent = 'Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.';
         submitBtn.disabled = true;
+        timeSelect.disabled = true;
       } else {
         message.className = 'form-message';
         message.textContent = '';
         submitBtn.disabled = false;
+        timeSelect.disabled = false;
+        updateAvailableSlots();
       }
     });
 
@@ -113,8 +154,8 @@
       e.preventDefault();
 
       var phoneVal = phoneInput.value.trim();
-      var isMobile = /^09\d{9}$/.test(phoneVal);       // 11 digits starting with 09
-      var isLandline = /^(0\d{7,9}|\d{7,8})$/.test(phoneVal); // 7 to 10 digits landline
+      var isMobile = /^09\d{9}$/.test(phoneVal);
+      var isLandline = /^(0\d{7,9}|\d{7,8})$/.test(phoneVal);
 
       if (!isMobile && !isLandline) {
         message.className = 'form-message error';
@@ -124,7 +165,7 @@
       }
 
       var selectedDate = dateInput.value;
-      var selectedTime = document.getElementById('time').value;
+      var selectedTime = timeSelect.value;
 
       // 1. Check kung naka-block ang date sa Admin Panel
       var blocked = getBlockedDate(selectedDate);
@@ -137,7 +178,7 @@
       try {
         var bookings = JSON.parse(localStorage.getItem('bookings')) || [];
 
-        // 2. Check kung may naka-book na sa eksaktong date at time (maliban sa Cancelled)
+        // 2. Check kung may naka-book na sa eksaktong date at time
         var isTaken = bookings.some(function (b) {
           return b.date === selectedDate && b.time === selectedTime && b.status !== 'Cancelled';
         });
@@ -145,6 +186,7 @@
         if (isTaken) {
           message.className = 'form-message error';
           message.textContent = 'That time slot is already booked. Please select a different time or date.';
+          updateAvailableSlots();
           return;
         }
 
@@ -166,6 +208,7 @@
         message.className = 'form-message success';
         message.textContent = 'Thank you, ' + booking.name + '! Your booking has been submitted. We will confirm it soon.';
         form.reset();
+        updateAvailableSlots();
       } catch (err) {
         message.className = 'form-message error';
         message.textContent = 'Sorry, something went wrong. Please try again.';
