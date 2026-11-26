@@ -62,7 +62,7 @@
 
         <div class="form-message" id="formMessage"></div>
 
-        <button type="submit" class="btn btn-filled">Submit Booking</button>
+        <button type="submit" class="btn btn-filled" id="submitBtn">Submit Booking</button>
       </form>
     </div>
   </main>
@@ -71,28 +71,78 @@
     var form = document.getElementById('bookingForm');
     var message = document.getElementById('formMessage');
     var dateInput = document.getElementById('date');
+    var submitBtn = document.getElementById('submitBtn');
 
     // Hindi pwedeng pumili ng nakaraang petsa
     var today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
 
+    // Helper: kunin ang blocked date info mula sa Admin Clinic Schedule
+    function getBlockedDate(selectedDate) {
+      try {
+        var blockedList = JSON.parse(localStorage.getItem('blockedDates')) || [];
+        return blockedList.filter(function (item) {
+          return item.date === selectedDate;
+        })[0] || null;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    // Real-time check habang pumipili pa lang ng date ang pasyente
+    dateInput.addEventListener('change', function () {
+      var blocked = getBlockedDate(dateInput.value);
+      if (blocked) {
+        message.className = 'form-message error';
+        message.textContent = 'Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.';
+        submitBtn.disabled = true;
+      } else {
+        message.className = 'form-message';
+        message.textContent = '';
+        submitBtn.disabled = false;
+      }
+    });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      var booking = {
-        id: Date.now(),
-        name: document.getElementById('name').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        service: document.getElementById('service').value,
-        date: dateInput.value,
-        time: document.getElementById('time').value,
-        status: 'Pending',
-        createdAt: new Date().toLocaleString()
-      };
+      var selectedDate = dateInput.value;
+      var selectedTime = document.getElementById('time').value;
+
+      // 1. Check kung naka-block ang date sa Admin Panel
+      var blocked = getBlockedDate(selectedDate);
+      if (blocked) {
+        message.className = 'form-message error';
+        message.textContent = 'Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.';
+        return;
+      }
 
       try {
         var bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+
+        // 2. Check kung may naka-book na sa eksaktong date at time (maliban sa Cancelled)
+        var isTaken = bookings.some(function (b) {
+          return b.date === selectedDate && b.time === selectedTime && b.status !== 'Cancelled';
+        });
+
+        if (isTaken) {
+          message.className = 'form-message error';
+          message.textContent = 'That time slot is already booked. Please select a different time or date.';
+          return;
+        }
+
+        var booking = {
+          id: Date.now(),
+          name: document.getElementById('name').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          service: document.getElementById('service').value,
+          date: selectedDate,
+          time: selectedTime,
+          status: 'Pending',
+          createdAt: new Date().toLocaleString()
+        };
+
         bookings.push(booking);
         localStorage.setItem('bookings', JSON.stringify(bookings));
 
