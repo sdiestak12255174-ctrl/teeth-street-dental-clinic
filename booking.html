@@ -1,184 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Book an Appointment</title>
-<link rel="stylesheet" href="booking.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book an Appointment - Teeth Street Dental Clinic</title>
+  <!-- Siguraduhing tama ang path papunta sa CSS file mo -->
+  <link rel="stylesheet" href="booking.css">
 </head>
-<body class="bk">
-<div class="bk-page">
-  <div class="bk-wrap">
-    <a class="bk-back" href="index.html">← Back to Home</a>
-    <main class="bk-card">
-      <h1 class="bk-title">Book an appointment</h1>
-      <p class="bk-lead">Fill out the form and our team will confirm your schedule.</p>
-      <form id="form" class="bk-form" novalidate>
-        <div class="bk-field">
-          <label class="bk-label" for="name">Full name</label>
-          <input class="bk-input" id="name" type="text" autocomplete="name" required aria-describedby="name-err">
-          <p class="bk-error" id="name-err" hidden></p>
+<body>
+  <main class="booking-wrapper">
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <header class="booking-header">
+      <h1>Book an Appointment</h1>
+      <p>Fill out the form and our team will confirm your schedule.</p>
+    </header>
+
+    <div class="booking-card">
+      <form action="#" method="POST" class="booking-form">
+        <!-- Row 1: Full Name & Phone -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="full-name">Full Name</label>
+            <input type="text" id="full-name" name="full_name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" required>
+          </div>
         </div>
-        <div class="bk-field">
-          <label class="bk-label" for="phone">Phone / mobile number</label>
-          <input class="bk-input" id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXXX or 02XXXXXXXX" required aria-describedby="phone-hint phone-err">
-          <p class="bk-hint" id="phone-hint">Mobile: 09XXXXXXXXX. Landline: 02XXXXXXXX.</p>
-          <p class="bk-error" id="phone-err" hidden></p>
+
+        <!-- Row 2: Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
         </div>
-        <div class="bk-field">
-          <label class="bk-label" for="email">Email</label>
-          <input class="bk-input" id="email" type="email" autocomplete="email" placeholder="name@email.com" required aria-describedby="email-err">
-          <p class="bk-error" id="email-err" hidden></p>
-        </div>
-        <div class="bk-field">
-          <label class="bk-label" for="service">Service</label>
-          <select class="bk-input" id="service" required aria-describedby="service-err">
-            <option value="">Select a service</option>
-            <option>Service A</option>
-            <option>Service B</option>
-            <option>Service C</option>
+
+        <!-- Row 3: Service -->
+        <div class="form-group">
+          <label for="service">Service</label>
+          <select id="service" name="service" required>
+            <option value="" disabled selected>Select a service</option>
+            <option value="cleaning">Oral Prophylaxis (Cleaning)</option>
+            <option value="consultation">Dental Check-up & Consultation</option>
+            <option value="filling">Tooth Restoration (Pasta)</option>
+            <option value="extraction">Tooth Extraction (Bunot)</option>
+            <option value="whitening">Teeth Whitening</option>
+            <option value="braces">Orthodontics / Braces</option>
           </select>
-          <p class="bk-error" id="service-err" hidden></p>
         </div>
-        <div class="bk-row">
-          <div class="bk-field">
-            <label class="bk-label" for="date">Preferred date</label>
-            <input class="bk-input" id="date" type="date" required aria-describedby="date-err">
-            <p class="bk-error" id="date-err" hidden></p>
+
+        <!-- Row 4: Preferred Date & Time -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">Preferred Date</label>
+            <input type="date" id="date" name="date" required>
           </div>
-          <div class="bk-field">
-            <label class="bk-label" for="time">Preferred time</label>
-            <input class="bk-input" id="time" type="time" required aria-describedby="time-err">
-            <p class="bk-error" id="time-err" hidden></p>
+
+          <div class="form-group">
+            <label for="time">Preferred Time</label>
+            <input type="time" id="time" name="time" required>
           </div>
         </div>
-        <fieldset class="bk-fieldset" aria-describedby="notify-hint notify-err">
-          <legend class="bk-label">How should we notify you?</legend>
-          <div class="bk-choices">
-            <label class="bk-choice"><input type="radio" name="notify" value="SMS"><span><b>SMS</b><small>Text message</small></span></label>
-            <label class="bk-choice is-on"><input type="radio" name="notify" value="Email" checked><span><b>Email</b><small>Inbox</small></span></label>
-            <label class="bk-choice"><input type="radio" name="notify" value="Both"><span><b>Both</b><small>SMS and email</small></span></label>
-          </div>
-          <p class="bk-hint" id="notify-hint">SMS needs a mobile number (09XXXXXXXXX).</p>
-          <p class="bk-error" id="notify-err" hidden></p>
-        </fieldset>
-        <div class="bk-field">
-          <label class="bk-label" for="question">Questions or notes <span class="bk-optional">(optional)</span></label>
-          <textarea class="bk-input bk-textarea" id="question" rows="3" maxlength="500" placeholder="Tell us anything we should know before your visit."></textarea>
-        </div>
-        <button class="bk-btn bk-btn-primary" type="submit">Review booking</button>
-        <p class="bk-note">You can check your details before we send them.</p>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">Submit Booking</button>
       </form>
-    </main>
-  </div>
-
-  <dialog class="bk-dialog" id="review" aria-labelledby="review-title">
-    <h2 class="bk-dialog-title" id="review-title">Check your booking</h2>
-    <dl class="bk-summary" id="summary"></dl>
-    <div class="bk-actions">
-      <button class="bk-btn bk-btn-secondary" type="button" id="edit">Edit details</button>
-      <button class="bk-btn bk-btn-primary" type="button" id="send">Send booking</button>
     </div>
-  </dialog>
-
-  <dialog class="bk-dialog" id="done" aria-labelledby="done-title">
-    <h2 class="bk-dialog-title" id="done-title">Booking sent</h2>
-    <p class="bk-done-text">Our team will review it and confirm your schedule using the notification option you chose.</p>
-    <button class="bk-btn bk-btn-primary" type="button" id="again">Book another appointment</button>
-  </dialog>
-</div>
-
-<script>
-const KEY = 'bookings';
-const $ = id => document.getElementById(id);
-const form = $('form');
-const fields = ['name','phone','email','service','date','time'];
-const MOBILE = /^09\d{9}$/, LANDLINE = /^02\d{8}$/;
-
-// no past dates
-$('date').min = new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
-
-// highlight the chosen notify card (works in every browser)
-function paintChoices(){
-  form.querySelectorAll('.bk-choice').forEach(c => c.classList.toggle('is-on', c.querySelector('input').checked));
-}
-form.querySelectorAll('input[name=notify]').forEach(r => r.addEventListener('change', paintChoices));
-
-function setError(id, msg){
-  const input = $(id), err = $(id + '-err');
-  err.textContent = msg || ''; err.hidden = !msg;
-  if (input) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-}
-function notifyValue(){ return form.querySelector('input[name=notify]:checked').value; }
-
-function validate(){
-  let first = null;
-  const fail = (id, msg) => { setError(id, msg); if (!first) first = $(id) || form.querySelector('input[name=notify]'); };
-  const v = id => $(id).value.trim();
-  const phone = v('phone').replace(/[\s-]/g,'');
-
-  v('name') ? setError('name') : fail('name','Enter your full name.');
-  if (!phone) fail('phone','Enter a phone number.');
-  else if (!MOBILE.test(phone) && !LANDLINE.test(phone)) fail('phone','Use 09XXXXXXXXX (mobile) or 02XXXXXXXX (landline).');
-  else setError('phone');
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email')) ? setError('email') : fail('email','Enter a valid email, like name@email.com.');
-  v('service') ? setError('service') : fail('service','Choose a service.');
-  v('date') ? setError('date') : fail('date','Pick a date.');
-  v('time') ? setError('time') : fail('time','Pick a time.');
-
-  const n = notifyValue();
-  if ((n === 'SMS' || n === 'Both') && !MOBILE.test(phone)){ fail('notify','SMS needs a mobile number that starts with 09.'); $('notify-err').hidden = false; }
-  else setError('notify');
-
-  if (first) first.focus();
-  return !first;
-}
-
-function data(){
-  return {
-    id: 'bk_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    name: $('name').value.trim(),
-    phone: $('phone').value.replace(/[\s-]/g,''),
-    email: $('email').value.trim(),
-    service: $('service').value,
-    date: $('date').value,
-    time: $('time').value,
-    notify: notifyValue(),
-    question: $('question').value.trim(),
-    status: 'Pending',
-    createdAt: new Date().toISOString()
-  };
-}
-
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  if (!validate()) return;
-  const d = data(), s = $('summary'); s.textContent = '';
-  const rows = [['Name',d.name],['Phone',d.phone],['Email',d.email],['Service',d.service],['Date',d.date],['Time',d.time],['Notify by',d.notify]];
-  if (d.question) rows.push(['Notes', d.question]);
-  rows.forEach(([k,val]) => {
-    const dt = document.createElement('dt'), dd = document.createElement('dd');
-    dt.textContent = k; dd.textContent = val; s.append(dt,dd);
-  });
-  $('review').showModal();
-});
-
-$('edit').onclick = () => $('review').close();
-
-$('send').onclick = () => {
-  let list = [];
-  try { list = JSON.parse(localStorage.getItem(KEY)) || []; } catch(_){}
-  list.push(data());
-  try { localStorage.setItem(KEY, JSON.stringify(list)); }
-  catch(_){ alert('Could not save the booking. Please try again.'); return; }
-  $('review').close(); $('done').showModal();
-};
-
-$('again').onclick = () => {
-  $('done').close(); form.reset(); paintChoices();
-  fields.forEach(id => setError(id)); setError('notify');
-  $('name').focus();
-};
-</script>
+  </main>
 </body>
 </html>
