@@ -6,93 +6,87 @@
 <title>Book an Appointment</title>
 <link rel="stylesheet" href="booking.css">
 </head>
-<body>
-<div class="page"><div class="wrap">
-<a class="back" href="index.html">← Back to Home</a>
-<main>
-  <h1>Book an appointment</h1>
-  <p class="lead">Fill out the form and our team will confirm your schedule.</p>
-
-  <form id="form" novalidate>
-    <div class="field">
-      <label for="name">Full name</label>
-      <input id="name" type="text" autocomplete="name" required aria-describedby="name-err">
-      <p class="error" id="name-err" hidden></p>
-    </div>
-
-    <div class="field">
-      <label for="phone">Phone / mobile number</label>
-      <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXXX or 02XXXXXXXX" required aria-describedby="phone-hint phone-err">
-      <p class="hint" id="phone-hint">Mobile: 09XXXXXXXXX. Landline: 02XXXXXXXX.</p>
-      <p class="error" id="phone-err" hidden></p>
-    </div>
-
-    <div class="field">
-      <label for="email">Email</label>
-      <input id="email" type="email" autocomplete="email" placeholder="name@email.com" required aria-describedby="email-err">
-      <p class="error" id="email-err" hidden></p>
-    </div>
-
-    <div class="field">
-      <label for="service">Service</label>
-      <select id="service" required aria-describedby="service-err">
-        <option value="">Select a service</option>
-        <option>Service A</option>
-        <option>Service B</option>
-        <option>Service C</option>
-      </select>
-      <p class="error" id="service-err" hidden></p>
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="date">Preferred date</label>
-        <input id="date" type="date" required aria-describedby="date-err">
-        <p class="error" id="date-err" hidden></p>
-      </div>
-      <div class="field">
-        <label for="time">Preferred time</label>
-        <input id="time" type="time" required aria-describedby="time-err">
-        <p class="error" id="time-err" hidden></p>
-      </div>
-    </div>
-
-    <fieldset aria-describedby="notify-hint notify-err">
-      <legend>How should we notify you?</legend>
-      <div class="choices">
-        <label class="choice"><input type="radio" name="notify" value="SMS"><span><b>SMS</b><small>Text message</small></span></label>
-        <label class="choice"><input type="radio" name="notify" value="Email" checked><span><b>Email</b><small>Inbox</small></span></label>
-        <label class="choice"><input type="radio" name="notify" value="Both"><span><b>Both</b><small>SMS and email</small></span></label>
-      </div>
-      <p class="hint" id="notify-hint">SMS needs a mobile number (09XXXXXXXXX).</p>
-      <p class="error" id="notify-err" hidden></p>
-    </fieldset>
-
-    <div class="field">
-      <label for="question">Questions or notes <span class="optional">(optional)</span></label>
-      <textarea id="question" rows="3" maxlength="500" placeholder="Tell us anything we should know before your visit."></textarea>
-    </div>
-
-    <button class="primary" type="submit">Review booking</button>
-    <p class="note">You can check your details before we send them.</p>
-  </form>
-</main>
-</div></div>
-
-<dialog id="review" aria-labelledby="review-title">
-  <h2 id="review-title">Check your booking</h2>
-  <dl id="summary"></dl>
-  <div class="actions">
-    <button class="secondary" type="button" id="edit">Edit details</button>
-    <button class="primary" type="button" id="send">Send booking</button>
+<body class="bk">
+<div class="bk-page">
+  <div class="bk-wrap">
+    <a class="bk-back" href="index.html">← Back to Home</a>
+    <main class="bk-card">
+      <h1 class="bk-title">Book an appointment</h1>
+      <p class="bk-lead">Fill out the form and our team will confirm your schedule.</p>
+      <form id="form" class="bk-form" novalidate>
+        <div class="bk-field">
+          <label class="bk-label" for="name">Full name</label>
+          <input class="bk-input" id="name" type="text" autocomplete="name" required aria-describedby="name-err">
+          <p class="bk-error" id="name-err" hidden></p>
+        </div>
+        <div class="bk-field">
+          <label class="bk-label" for="phone">Phone / mobile number</label>
+          <input class="bk-input" id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXXX or 02XXXXXXXX" required aria-describedby="phone-hint phone-err">
+          <p class="bk-hint" id="phone-hint">Mobile: 09XXXXXXXXX. Landline: 02XXXXXXXX.</p>
+          <p class="bk-error" id="phone-err" hidden></p>
+        </div>
+        <div class="bk-field">
+          <label class="bk-label" for="email">Email</label>
+          <input class="bk-input" id="email" type="email" autocomplete="email" placeholder="name@email.com" required aria-describedby="email-err">
+          <p class="bk-error" id="email-err" hidden></p>
+        </div>
+        <div class="bk-field">
+          <label class="bk-label" for="service">Service</label>
+          <select class="bk-input" id="service" required aria-describedby="service-err">
+            <option value="">Select a service</option>
+            <option>Service A</option>
+            <option>Service B</option>
+            <option>Service C</option>
+          </select>
+          <p class="bk-error" id="service-err" hidden></p>
+        </div>
+        <div class="bk-row">
+          <div class="bk-field">
+            <label class="bk-label" for="date">Preferred date</label>
+            <input class="bk-input" id="date" type="date" required aria-describedby="date-err">
+            <p class="bk-error" id="date-err" hidden></p>
+          </div>
+          <div class="bk-field">
+            <label class="bk-label" for="time">Preferred time</label>
+            <input class="bk-input" id="time" type="time" required aria-describedby="time-err">
+            <p class="bk-error" id="time-err" hidden></p>
+          </div>
+        </div>
+        <fieldset class="bk-fieldset" aria-describedby="notify-hint notify-err">
+          <legend class="bk-label">How should we notify you?</legend>
+          <div class="bk-choices">
+            <label class="bk-choice"><input type="radio" name="notify" value="SMS"><span><b>SMS</b><small>Text message</small></span></label>
+            <label class="bk-choice is-on"><input type="radio" name="notify" value="Email" checked><span><b>Email</b><small>Inbox</small></span></label>
+            <label class="bk-choice"><input type="radio" name="notify" value="Both"><span><b>Both</b><small>SMS and email</small></span></label>
+          </div>
+          <p class="bk-hint" id="notify-hint">SMS needs a mobile number (09XXXXXXXXX).</p>
+          <p class="bk-error" id="notify-err" hidden></p>
+        </fieldset>
+        <div class="bk-field">
+          <label class="bk-label" for="question">Questions or notes <span class="bk-optional">(optional)</span></label>
+          <textarea class="bk-input bk-textarea" id="question" rows="3" maxlength="500" placeholder="Tell us anything we should know before your visit."></textarea>
+        </div>
+        <button class="bk-btn bk-btn-primary" type="submit">Review booking</button>
+        <p class="bk-note">You can check your details before we send them.</p>
+      </form>
+    </main>
   </div>
-</dialog>
 
-<dialog id="done" aria-labelledby="done-title">
-  <h2 id="done-title">Booking sent</h2>
-  <p class="done-text">Our team will review it and confirm your schedule using the notification option you chose.</p>
-  <button class="primary full" type="button" id="again">Book another appointment</button>
-</dialog>
+  <dialog class="bk-dialog" id="review" aria-labelledby="review-title">
+    <h2 class="bk-dialog-title" id="review-title">Check your booking</h2>
+    <dl class="bk-summary" id="summary"></dl>
+    <div class="bk-actions">
+      <button class="bk-btn bk-btn-secondary" type="button" id="edit">Edit details</button>
+      <button class="bk-btn bk-btn-primary" type="button" id="send">Send booking</button>
+    </div>
+  </dialog>
+
+  <dialog class="bk-dialog" id="done" aria-labelledby="done-title">
+    <h2 class="bk-dialog-title" id="done-title">Booking sent</h2>
+    <p class="bk-done-text">Our team will review it and confirm your schedule using the notification option you chose.</p>
+    <button class="bk-btn bk-btn-primary" type="button" id="again">Book another appointment</button>
+  </dialog>
+</div>
 
 <script>
 const KEY = 'bookings';
@@ -103,6 +97,12 @@ const MOBILE = /^09\d{9}$/, LANDLINE = /^02\d{8}$/;
 
 // no past dates
 $('date').min = new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+
+// highlight the chosen notify card (works in every browser)
+function paintChoices(){
+  form.querySelectorAll('.bk-choice').forEach(c => c.classList.toggle('is-on', c.querySelector('input').checked));
+}
+form.querySelectorAll('input[name=notify]').forEach(r => r.addEventListener('change', paintChoices));
 
 function setError(id, msg){
   const input = $(id), err = $(id + '-err');
@@ -175,7 +175,7 @@ $('send').onclick = () => {
 };
 
 $('again').onclick = () => {
-  $('done').close(); form.reset();
+  $('done').close(); form.reset(); paintChoices();
   fields.forEach(id => setError(id)); setError('notify');
   $('name').focus();
 };
