@@ -85,6 +85,12 @@
       color: #2c283e;
     }
 
+    .helper-text {
+      font-size: 0.78rem;
+      color: #6e6b7b;
+      margin-top: -2px;
+    }
+
     input,
     select {
       width: 100%;
@@ -156,25 +162,37 @@
           </div>
 
           <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" name="phone" required>
+            <label for="phone">Phone / Mobile Number</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone" 
+              inputmode="numeric"
+              placeholder="09XXXXXXXXX or 02XXXXXXXX" 
+              pattern="^(09\d{9}|0\d{9})$"
+              title="Enter an 11-digit mobile number (09XXXXXXXXX) or 10-digit landline (02XXXXXXXX)"
+              required
+            >
+            <span class="helper-text" id="phone-hint">Mobile: 11 digits (09...) | Landline: 10 digits (02...)</span>
           </div>
         </div>
 
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
+          <input type="email" id="email" name="email" placeholder="name@email.com" required>
         </div>
 
         <div class="form-group">
           <label for="service">Service</label>
           <select id="service" name="service" required>
             <option value="" disabled selected>Select a service</option>
-            <option value="General Dentistry</option>
-            <option value="Orthodontics</option>
-            <option value="Cosmetic Dentistry</option>
-            <option value="Pediatric Dentistry</option>
-      </select>
+            <option value="cleaning">Oral Prophylaxis (Cleaning)</option>
+            <option value="consultation">Dental Check-up & Consultation</option>
+            <option value="filling">Tooth Restoration (Pasta)</option>
+            <option value="extraction">Tooth Extraction (Bunot)</option>
+            <option value="whitening">Teeth Whitening</option>
+            <option value="braces">Orthodontics / Braces</option>
+          </select>
         </div>
 
         <div class="form-row">
@@ -193,5 +211,31 @@
       </form>
     </div>
   </main>
+
+  <script>
+    const phoneInput = document.getElementById('phone');
+    const phoneHint = document.getElementById('phone-hint');
+
+    phoneInput.addEventListener('input', function () {
+      // Tanggalin ang anumang hindi numero (letters, spaces, symbols)
+      let digits = this.value.replace(/\D/g, '');
+
+      if (digits.startsWith('09')) {
+        // Mobile number: hanggang 11 digits lang
+        digits = digits.slice(0, 11);
+        phoneHint.textContent = `Mobile number (${digits.length}/11 digits)`;
+      } else if (digits.startsWith('0')) {
+        // Landline (gaya ng 02XXXXXXXX): hanggang 10 digits lang
+        digits = digits.slice(0, 10);
+        phoneHint.textContent = `Landline number (${digits.length}/10 digits)`;
+      } else {
+        // Default limit kung hindi pa nagsisimula sa 0
+        digits = digits.slice(0, 11);
+        phoneHint.textContent = 'Mobile: 11 digits (09...) | Landline: 10 digits (02...)';
+      }
+
+      this.value = digits;
+    });
+  </script>
 </body>
 </html>
