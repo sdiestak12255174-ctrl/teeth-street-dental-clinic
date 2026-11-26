@@ -1,215 +1,306 @@
-/* Booking form + Admin page - styles */
+/* Colors below were sampled from your current page, so the new parts match the theme.
+   Change them here and everything updates. */
 
-/* Page wrapper */
-.page-narrow {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 48px 24px;
+:root {
+  --ts-purple: #703fb0;       /* button purple */
+  --ts-purple-dark: #5a3290;  /* hover purple */
+  --ts-ink: #28183f;          /* headings, labels, input text */
+  --ts-muted: #5b5670;        /* subtitles, hints */
+  --ts-line: #d9cdea;         /* input borders */
+  --ts-card-line: #e8e0f2;    /* card borders, dividers */
 }
 
-.page-wide {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 48px 24px;
-}
 
-.back-link {
-  display: inline-block;
-  font-size: 13px;
-  color: var(--purple-main);
-  text-decoration: none;
-  margin-bottom: 24px;
-}
-
-.back-link:hover {
-  text-decoration: underline;
-}
-
-/* Booking form */
-.booking-card {
-  background-color: var(--white);
-  border: 1px solid #e8e0f2;
-  border-radius: 16px;
-  padding: 32px;
-}
-
-.booking-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-dark);
-}
-
-.form-group input,
-.form-group select {
-  font-family: var(--font-body);
-  font-size: 14px;
-  padding: 11px 12px;
-  border: 1px solid #d9cdea;
-  border-radius: 8px;
-  background-color: var(--white);
-  color: var(--text-dark);
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: 2px solid var(--purple-main);
-  outline-offset: 1px;
-  border-color: var(--purple-main);
-}
-
-.form-message {
-  font-size: 13px;
-  padding: 12px 14px;
-  border-radius: 8px;
-  display: none;
-}
-
-.form-message.success {
-  display: block;
-  background-color: #e8f7ee;
-  color: #1f6b3b;
-}
-
-.form-message.error {
-  display: block;
-  background-color: #fdeaea;
-  color: #a12b2b;
-}
-
-.booking-form .btn {
-  align-self: flex-start;
-}
-
-/* Admin */
-.admin-login {
-  max-width: 380px;
-  margin: 0 auto;
-}
-
-.admin-bar {
+/* ---------- Submit / Review button ---------- */
+.btn-submit {
+  background: var(--ts-purple);
+  color: #fff;
+  font-family: inherit;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.admin-bar .btn,
-.admin-login .btn {
-  padding: 8px 18px;
-  font-size: 13px;
-}
-
-.table-wrap {
-  overflow-x: auto;
-  border: 1px solid #e8e0f2;
-  border-radius: 12px;
-  background-color: var(--white);
-}
-
-.bookings-table {
+  justify-content: center;
+  gap: 10px;
   width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
+  height: 54px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-.bookings-table th,
-.bookings-table td {
-  padding: 12px 14px;
-  text-align: left;
-  border-bottom: 1px solid #efe8f7;
-  white-space: nowrap;
+.btn-submit:hover:not(:disabled) {
+  background: var(--ts-purple-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(112, 63, 176, 0.3);
 }
 
-.bookings-table th {
-  background-color: var(--purple-light);
-  color: var(--text-dark);
-  font-weight: 700;
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
-.bookings-table tr:last-child td {
-  border-bottom: none;
+.btn-submit:focus-visible {
+  outline: 3px solid rgba(112, 63, 176, 0.35);
+  outline-offset: 2px;
 }
 
-.status {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 11px;
+.btn-submit:disabled {
+  background: var(--ts-card-line);
+  color: #9b97a8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.submit-hint {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ts-muted);
+}
+
+/* ---------- Notification preference cards ---------- */
+.notify-group {
+  border: none;
+  padding: 0;
+  margin: 0 0 16px;
+  min-width: 0;
+}
+
+.notify-group legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ts-ink);
+}
+
+.notify-group .notify-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.notify-group .notify-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--ts-line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ts-ink);
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.notify-group .notify-option:hover {
+  border-color: var(--ts-purple);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(112, 63, 176, 0.18);
+}
+
+.notify-group .notify-option svg {
+  flex-shrink: 0;
+  color: var(--ts-purple);
+}
+
+.notify-group .notify-option strong {
+  display: block;
+  font-size: 0.95rem;
   font-weight: 600;
 }
 
-.status.pending {
-  background-color: #fff4d6;
-  color: #8a6100;
+.notify-group .notify-option small {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ts-muted);
 }
 
-.status.confirmed {
-  background-color: #e8f7ee;
-  color: #1f6b3b;
+/* Hidden radio, the whole card is the control */
+.notify-group .notify-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.action-btn {
-  font-family: var(--font-body);
-  font-size: 12px;
-  padding: 5px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--purple-main);
-  background-color: transparent;
-  color: var(--purple-main);
-  cursor: pointer;
-  margin-right: 4px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+.notify-group .notify-option:has(input:checked) {
+  border: 2px solid var(--ts-purple);
+  padding: 11px;
+  background: rgba(112, 63, 176, 0.08);
 }
 
-.action-btn:hover {
-  background-color: var(--purple-main);
-  color: var(--white);
+.notify-group .notify-option:has(input:focus-visible) {
+  outline: 3px solid rgba(112, 63, 176, 0.35);
+  outline-offset: 2px;
 }
 
-.action-btn.danger {
-  border-color: #c0392b;
-  color: #c0392b;
+.field-hint {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: var(--ts-muted);
 }
 
-.action-btn.danger:hover {
-  background-color: #c0392b;
-  color: var(--white);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 32px;
-  color: var(--text-gray);
-  font-size: 13px;
-}
-
-/* Mobile */
-@media (max-width: 576px) {
-  .form-row {
+@media (max-width: 520px) {
+  .notify-group .notify-options {
     grid-template-columns: 1fr;
   }
-
-  .booking-card {
-    padding: 24px 18px;
-  }
 }
+
+/* ---------- Review / confirmation modal ---------- */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(20, 12, 36, 0.55);
+  overflow-y: auto;
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  width: 100%;
+  max-width: 460px;
+  padding: 24px;
+  border: 1px solid var(--ts-card-line);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--ts-ink);
+}
+
+.modal h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.modal-sub {
+  margin: 4px 0 12px;
+  font-size: 0.9rem;
+  color: var(--ts-muted);
+}
+
+.review-list {
+  margin: 0;
+  border-top: 1px solid var(--ts-card-line);
+}
+
+.review-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ts-card-line);
+  font-size: 0.95rem;
+}
+
+.review-list dt {
+  color: var(--ts-muted);
+}
+
+.review-list dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.confirm-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 16px 0;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.confirm-check input {
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+  accent-color: var(--ts-purple);
+  flex-shrink: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit,
+.btn-confirm {
+  height: 54px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.btn-edit {
+  flex: 1;
+  border: 1px solid var(--ts-line);
+  background: #fff;
+  color: var(--ts-ink);
+}
+
+.btn-edit:hover {
+  background: #f6f1fb;
+  border-color: var(--ts-purple);
+}
+
+.btn-confirm {
+  flex: 1.4;
+  border: none;
+  background: var(--ts-purple);
+  color: #fff;
+}
+
+.btn-confirm:hover:not(:disabled) {
+  background: var(--ts-purple-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(112, 63, 176, 0.3);
+}
+
+.btn-confirm:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn-confirm:disabled {
+  background: var(--ts-card-line);
+  color: #9b97a8;
+  cursor: not-allowed;
+}
+
+.btn-edit:focus-visible,
+.btn-confirm:focus-visible {
+  outline: 3px solid rgba(112, 63, 176, 0.35);
+  outline-offset: 2px;
+}
+
