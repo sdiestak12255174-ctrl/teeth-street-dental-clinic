@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/buttons.css">
   <link rel="stylesheet" href="css/booking.css">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
@@ -33,154 +34,184 @@
           <button type="submit" class="btn btn-filled">Log In</button>
         </form>
       </div>
-      <p class="section-subtitle" style="margin-top:16px;"></p>
+      <p class="section-subtitle" style="margin-top:16px;">Demo login: admin / admin</p>
     </div>
   </main>
 
   <!-- DASHBOARD -->
   <main class="page-wide" id="dashboardView" style="display:none;">
-    <div class="admin-bar">
-      <div>
-        <h1 class="section-title" style="text-align:left; margin-bottom:4px;">Bookings</h1>
-        <p class="section-subtitle" style="text-align:left; margin-bottom:0;" id="countText"></p>
-      </div>
-      <button type="button" class="btn btn-outline" id="logoutBtn">Log Out</button>
+
+    <div class="admin-top">
+      <h1 class="section-title" style="text-align:left; margin-bottom:0;">Admin Panel</h1>
+      <button type="button" class="btn btn-outline" id="logoutBtn" style="padding:8px 18px; font-size:13px;">Log Out</button>
     </div>
 
-    <div class="table-wrap">
-      <table class="bookings-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Service</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="bookingsBody"></tbody>
-      </table>
-      <div class="empty-state" id="emptyState" style="display:none;">No bookings yet.</div>
+    <div class="tabs">
+      <button type="button" class="tab-btn active" data-tab="dashboard">Dashboard</button>
+      <button type="button" class="tab-btn" data-tab="appointments">Appointments</button>
+      <button type="button" class="tab-btn" data-tab="patients">Patients</button>
     </div>
+
+    <!-- TAB: DASHBOARD -->
+    <section class="tab-panel active" id="tab-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total appointments</div></div>
+        <div class="stat-card"><div class="stat-number" id="statPending">0</div><div class="stat-label">Pending</div></div>
+        <div class="stat-card"><div class="stat-number" id="statConfirmed">0</div><div class="stat-label">Confirmed</div></div>
+        <div class="stat-card"><div class="stat-number" id="statCompleted">0</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div class="stat-number" id="statCancelled">0</div><div class="stat-label">Cancelled</div></div>
+        <div class="stat-card"><div class="stat-number" id="statPatients">0</div><div class="stat-label">Total patients</div></div>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <h3>Appointments by Service</h3>
+          <div id="serviceBars"></div>
+        </div>
+        <div class="report-card">
+          <h3>Today's Appointments</h3>
+          <ul class="today-list" id="todayList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: APPOINTMENTS -->
+    <section class="tab-panel" id="tab-appointments">
+      <div class="toolbar">
+        <input type="text" id="apptSearch" class="grow" placeholder="Search name, phone, or email">
+        <select id="apptStatus">
+          <option value="">All statuses</option>
+          <option>Pending</option>
+          <option>Confirmed</option>
+          <option>Completed</option>
+          <option>Cancelled</option>
+        </select>
+        <input type="date" id="apptDate">
+        <button type="button" class="btn btn-outline" id="apptClear">Clear</button>
+        <button type="button" class="btn btn-filled" id="exportBtn">Export CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Service</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="apptBody"></tbody>
+        </table>
+        <div class="empty-state" id="apptEmpty" style="display:none;">No appointments found.</div>
+      </div>
+    </section>
+
+    <!-- TAB: PATIENTS -->
+    <section class="tab-panel" id="tab-patients">
+      <div class="toolbar">
+        <input type="text" id="patSearch" class="grow" placeholder="Search name, phone, or email">
+        <button type="button" class="btn btn-filled" id="addPatientBtn">Add Patient</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Notes</th>
+              <th>Appointment History</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="patBody"></tbody>
+        </table>
+        <div class="empty-state" id="patEmpty" style="display:none;">No patients yet. Confirmed appointments are added automatically.</div>
+      </div>
+    </section>
+
   </main>
 
-  <script>
-    var ADMIN_USER = 'admin';
-    var ADMIN_PASS = 'admin';
+  <!-- MODAL: EDIT APPOINTMENT -->
+  <div class="modal-overlay" id="apptModal">
+    <div class="modal">
+      <h2>Edit Appointment</h2>
+      <p class="section-subtitle" style="text-align:left; margin-bottom:14px;" id="apptWho"></p>
+      <form class="booking-form" id="apptForm">
+        <input type="hidden" id="apptId">
+        <div class="form-group">
+          <label for="apptService">Service</label>
+          <select id="apptService" required>
+            <option>General Dentistry</option>
+            <option>Orthodontics</option>
+            <option>Cosmetic Dentistry</option>
+            <option>Pediatric Dentistry</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="apptDateEdit">Date</label>
+            <input type="date" id="apptDateEdit" required>
+          </div>
+          <div class="form-group">
+            <label for="apptTimeEdit">Time</label>
+            <input type="time" id="apptTimeEdit" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="apptStatusEdit">Status</label>
+          <select id="apptStatusEdit" required>
+            <option>Pending</option>
+            <option>Confirmed</option>
+            <option>Completed</option>
+            <option>Cancelled</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-filled">Save</button>
+          <button type="button" class="btn btn-outline" id="apptCancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-    var loginView = document.getElementById('loginView');
-    var dashboardView = document.getElementById('dashboardView');
-    var loginForm = document.getElementById('loginForm');
-    var loginMessage = document.getElementById('loginMessage');
-    var bodyEl = document.getElementById('bookingsBody');
-    var emptyState = document.getElementById('emptyState');
-    var countText = document.getElementById('countText');
+  <!-- MODAL: ADD / EDIT PATIENT -->
+  <div class="modal-overlay" id="patModal">
+    <div class="modal">
+      <h2 id="patModalTitle">Add Patient</h2>
+      <form class="booking-form" id="patForm">
+        <input type="hidden" id="patId">
+        <div class="form-group">
+          <label for="patName">Full Name</label>
+          <input type="text" id="patName" required>
+        </div>
+        <div class="form-group">
+          <label for="patPhone">Phone</label>
+          <input type="tel" id="patPhone" required>
+        </div>
+        <div class="form-group">
+          <label for="patEmail">Email</label>
+          <input type="email" id="patEmail">
+        </div>
+        <div class="form-group">
+          <label for="patNotes">Notes</label>
+          <input type="text" id="patNotes" placeholder="Allergies, remarks, etc.">
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-filled">Save</button>
+          <button type="button" class="btn btn-outline" id="patCancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-    function getBookings() {
-      try {
-        return JSON.parse(localStorage.getItem('bookings')) || [];
-      } catch (err) {
-        return [];
-      }
-    }
-
-    function saveBookings(list) {
-      localStorage.setItem('bookings', JSON.stringify(list));
-    }
-
-    function escapeHtml(text) {
-      var div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    function render() {
-      var bookings = getBookings();
-      bodyEl.innerHTML = '';
-
-      countText.textContent = bookings.length + ' total booking(s)';
-      emptyState.style.display = bookings.length === 0 ? 'block' : 'none';
-
-      bookings.forEach(function (b) {
-        var isConfirmed = b.status === 'Confirmed';
-        var tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td>' + escapeHtml(b.name) + '</td>' +
-          '<td>' + escapeHtml(b.phone) + '</td>' +
-          '<td>' + escapeHtml(b.email) + '</td>' +
-          '<td>' + escapeHtml(b.service) + '</td>' +
-          '<td>' + escapeHtml(b.date) + '</td>' +
-          '<td>' + escapeHtml(b.time) + '</td>' +
-          '<td><span class="status ' + (isConfirmed ? 'confirmed' : 'pending') + '">' + escapeHtml(b.status) + '</span></td>' +
-          '<td>' +
-            (isConfirmed ? '' : '<button class="action-btn" data-action="confirm" data-id="' + b.id + '">Confirm</button>') +
-            '<button class="action-btn danger" data-action="delete" data-id="' + b.id + '">Delete</button>' +
-          '</td>';
-        bodyEl.appendChild(tr);
-      });
-    }
-
-    function showDashboard() {
-      loginView.style.display = 'none';
-      dashboardView.style.display = 'block';
-      render();
-    }
-
-    function showLogin() {
-      dashboardView.style.display = 'none';
-      loginView.style.display = 'block';
-    }
-
-    loginForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var user = document.getElementById('username').value.trim();
-      var pass = document.getElementById('password').value;
-
-      if (user === ADMIN_USER && pass === ADMIN_PASS) {
-        sessionStorage.setItem('isAdmin', 'yes');
-        loginMessage.className = 'form-message';
-        loginForm.reset();
-        showDashboard();
-      } else {
-        loginMessage.className = 'form-message error';
-        loginMessage.textContent = 'Wrong username or password.';
-      }
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', function () {
-      sessionStorage.removeItem('isAdmin');
-      showLogin();
-    });
-
-    bodyEl.addEventListener('click', function (e) {
-      var btn = e.target.closest('button[data-action]');
-      if (!btn) return;
-
-      var id = Number(btn.getAttribute('data-id'));
-      var action = btn.getAttribute('data-action');
-      var bookings = getBookings();
-
-      if (action === 'confirm') {
-        bookings.forEach(function (b) {
-          if (b.id === id) b.status = 'Confirmed';
-        });
-        saveBookings(bookings);
-      } else if (action === 'delete') {
-        if (!confirm('Delete this booking?')) return;
-        bookings = bookings.filter(function (b) { return b.id !== id; });
-        saveBookings(bookings);
-      }
-      render();
-    });
-
-    // If still logged in during this session
-    if (sessionStorage.getItem('isAdmin') === 'yes') {
-      showDashboard();
-    }
-  </script>
+  <script src="js/admin.js"></script>
 
 </body>
 </html>
