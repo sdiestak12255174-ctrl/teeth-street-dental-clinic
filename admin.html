@@ -34,7 +34,99 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-main);
       color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* LOGIN SCREEN */
+    .login-screen {
+      min-height: 100vh;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background-color: var(--bg-main);
+    }
+
+    .login-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 28px rgba(26, 21, 46, 0.06);
+    }
+
+    .login-brand {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .login-brand h2 {
+      color: var(--primary);
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .login-brand p {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .login-form label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .login-form input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 14px;
+      font-size: 16px;
+      border: 1px solid #d8d4e6;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .login-form input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(102, 56, 182, 0.12);
+    }
+
+    .login-error {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      font-size: 0.84rem;
+      font-weight: 500;
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: none;
+      text-align: center;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    .login-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+    }
+
+    /* ADMIN APP LAYOUT */
+    .admin-app {
+      display: none;
       min-height: 100vh;
     }
 
@@ -123,6 +215,9 @@
     .sidebar-footer {
       padding: 16px 20px;
       border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .sidebar-footer a {
@@ -130,10 +225,6 @@
       text-decoration: none;
       font-size: 0.88rem;
       font-weight: 500;
-    }
-
-    .sidebar-footer a:hover {
-      text-decoration: underline;
     }
 
     /* Main Content */
@@ -182,7 +273,7 @@
     .admin-badge {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-size: 0.88rem;
       color: var(--text-muted);
     }
@@ -283,7 +374,6 @@
     input[type="email"],
     input[type="number"],
     input[type="date"],
-    input[type="time"],
     select,
     textarea {
       padding: 9px 12px;
@@ -323,7 +413,7 @@
     }
 
     .btn-sm {
-      padding: 5px 10px;
+      padding: 6px 11px;
       font-size: 0.78rem;
       border-radius: 6px;
     }
@@ -555,6 +645,9 @@
       .menu-toggle {
         display: inline-block;
       }
+      .topbar {
+        padding: 14px 16px;
+      }
       .content-container {
         padding: 20px 16px;
       }
@@ -563,218 +656,253 @@
 </head>
 <body>
 
-  <!-- Sidebar Navigation -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <h2>Teeth Street Dental</h2>
-      <span>Admin Management Portal</span>
-    </div>
-
-    <nav class="nav-menu">
-      <button class="nav-item active" data-target="dashboard" onclick="switchTab('dashboard', 'Dashboard Overview', this)">
-        <span>Dashboard Overview</span>
-      </button>
-      <button class="nav-item" data-target="appointments" onclick="switchTab('appointments', 'Appointment Management', this)">
-        <span>Appointments</span>
-        <span class="nav-tag"></span>
-      </button>
-      <button class="nav-item" data-target="patients" onclick="switchTab('patients', 'Patient Management', this)">
-        <span>Patients</span>
-        <span class="nav-tag"></span>
-      </button>
-      <button class="nav-item" data-target="services" onclick="switchTab('services', 'Services Management', this)">
-        <span>Services</span>
-      </button>
-      <button class="nav-item" data-target="reports" onclick="switchTab('reports', 'Reports & Analytics', this)">
-        <span>Reports & Analytics</span>
-      </button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <a href="index.html">&larr; Back to Public Website</a>
-    </div>
-  </aside>
-
-  <!-- Main Content Area -->
-  <div class="main-area">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="menu-toggle" onclick="toggleSidebar()">Menu</button>
-        <h1 id="page-title">Dashboard Overview</h1>
+  <!-- 1. ADMIN LOGIN SCREEN -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <h2>Teeth Street Dental</h2>
+        <p>Sign in to access the Admin Portal</p>
       </div>
-      <div class="admin-badge">
-        <span>Clinic Admin</span>
-        <div class="avatar">TS</div>
+
+      <div class="login-error" id="login-error">
+        Incorrect username or password. Please try again.
       </div>
-    </header>
 
-    <main class="content-container">
-
-      <!-- 1. DASHBOARD OVERVIEW -->
-      <section id="tab-dashboard" class="tab-section active">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Total Appointments</div>
-            <div class="stat-value" id="stat-total-appt">0</div>
-            <div class="stat-sub">All recorded bookings</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Pending Approval</div>
-            <div class="stat-value" id="stat-pending-appt">0</div>
-            <div class="stat-sub">Waiting for confirmation</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Registered Patients</div>
-            <div class="stat-value" id="stat-total-patients">0</div>
-            <div class="stat-sub">Patient directory count</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Estimated Revenue</div>
-            <div class="stat-value" id="stat-revenue">₱0</div>
-            <div class="stat-sub">Confirmed & completed</div>
-          </div>
+      <form class="login-form" id="login-form">
+        <div>
+          <label for="admin-user">Username</label>
+          <input type="text" id="admin-user" placeholder="Enter admin username" required>
         </div>
 
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3>Recent Bookings</h3>
-            <button class="btn btn-primary btn-sm" onclick="switchTab('appointments', 'Appointment Management', document.querySelector('[data-target=appointments]'))">Manage All</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Patient</th>
-                  <th>Service</th>
-                  <th>Date & Time</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="dashboard-recent-table"></tbody>
-            </table>
-          </div>
+        <div>
+          <label for="admin-pass">Password</label>
+          <input type="password" id="admin-pass" placeholder="Enter password" required>
         </div>
-      </section>
 
-      <!-- 2. APPOINTMENT MANAGEMENT (ESSENTIAL) -->
-      <section id="tab-appointments" class="tab-section">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3>Appointment Schedule</h3>
-            <div class="toolbar">
-              <input type="text" id="appt-search" placeholder="Search patient or service..." oninput="renderAppointments()">
-              <select id="appt-filter" onchange="renderAppointments()">
-                <option value="All">All Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-              <button class="btn btn-primary" onclick="openModal('modal-appointment')">+ New Appointment</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; min-height: 44px;">Log In</button>
+      </form>
+
+      <div class="login-footer">
+        <a href="index.html">&larr; Back to Public Website</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN ADMIN PORTAL -->
+  <div class="admin-app" id="admin-app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <h2>Teeth Street Dental</h2>
+        <span>Admin Management Portal</span>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-target="dashboard" onclick="switchTab('dashboard', 'Dashboard Overview', this)">
+          <span>Dashboard Overview</span>
+        </button>
+        <button class="nav-item" data-target="appointments" onclick="switchTab('appointments', 'Appointment Management', this)">
+          <span>Appointments</span>
+          <span class="nav-tag">Essential</span>
+        </button>
+        <button class="nav-item" data-target="patients" onclick="switchTab('patients', 'Patient Management', this)">
+          <span>Patients</span>
+          <span class="nav-tag">Essential</span>
+        </button>
+        <button class="nav-item" data-target="services" onclick="switchTab('services', 'Services Management', this)">
+          <span>Services</span>
+        </button>
+        <button class="nav-item" data-target="reports" onclick="switchTab('reports', 'Reports & Analytics', this)">
+          <span>Reports & Analytics</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="index.html">&larr; Back to Public Website</a>
+        <button class="btn btn-outline btn-sm" onclick="logoutAdmin()" style="width: 100%; margin-top: 4px;">Log Out</button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" onclick="toggleSidebar()">Menu</button>
+          <h1 id="page-title">Dashboard Overview</h1>
+        </div>
+        <div class="admin-badge">
+          <span>Admin</span>
+          <div class="avatar">TS</div>
+          <button class="btn btn-outline btn-sm" onclick="logoutAdmin()">Log Out</button>
+        </div>
+      </header>
+
+      <main class="content-container">
+
+        <!-- DASHBOARD OVERVIEW -->
+        <section id="tab-dashboard" class="tab-section active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Appointments</div>
+              <div class="stat-value" id="stat-total-appt">0</div>
+              <div class="stat-sub">All recorded bookings</div>
             </div>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Patient Name</th>
-                  <th>Contact</th>
-                  <th>Service</th>
-                  <th>Date & Time</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="appointments-table"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. PATIENT MANAGEMENT (ESSENTIAL) -->
-      <section id="tab-patients" class="tab-section">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3>Patient Records</h3>
-            <div class="toolbar">
-              <input type="text" id="patient-search" placeholder="Search patient name or phone..." oninput="renderPatients()">
-              <button class="btn btn-primary" onclick="openModal('modal-patient')">+ Add Patient</button>
+            <div class="stat-card">
+              <div class="stat-label">Pending Approval</div>
+              <div class="stat-value" id="stat-pending-appt">0</div>
+              <div class="stat-sub">Waiting for confirmation</div>
             </div>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Patient ID</th>
-                  <th>Full Name</th>
-                  <th>Phone / Email</th>
-                  <th>Last Visit</th>
-                  <th>Dental Notes</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="patients-table"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. SERVICES MANAGEMENT -->
-      <section id="tab-services" class="tab-section">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3>Clinic Dental Services</h3>
-            <button class="btn btn-primary" onclick="openModal('modal-service')">+ Add Service</button>
-          </div>
-          <div class="services-grid" id="services-grid"></div>
-        </div>
-      </section>
-
-      <!-- 5. REPORTS AND ANALYTICS -->
-      <section id="tab-reports" class="tab-section">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Completion Rate</div>
-            <div class="stat-value" id="rep-completion">0%</div>
-            <div class="stat-sub">Completed vs total bookings</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Most Requested</div>
-            <div class="stat-value" style="font-size: 1.2rem;" id="rep-top-service">-</div>
-            <div class="stat-sub">Top dental service</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Cancelled Bookings</div>
-            <div class="stat-value" id="rep-cancelled">0</div>
-            <div class="stat-sub">Total cancelled</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Active Services</div>
-            <div class="stat-value" id="rep-active-services">4</div>
-            <div class="stat-sub">Offered by clinic</div>
-          </div>
-        </div>
-
-        <div class="analytics-grid">
-          <div class="panel-card">
-            <div class="panel-header">
-              <h3>Bookings by Service</h3>
+            <div class="stat-card">
+              <div class="stat-label">Registered Patients</div>
+              <div class="stat-value" id="stat-total-patients">0</div>
+              <div class="stat-sub">Patient directory count</div>
             </div>
-            <div id="service-breakdown-bars"></div>
+            <div class="stat-card">
+              <div class="stat-label">Estimated Revenue</div>
+              <div class="stat-value" id="stat-revenue">₱0</div>
+              <div class="stat-sub">Confirmed & completed</div>
+            </div>
           </div>
 
           <div class="panel-card">
             <div class="panel-header">
-              <h3>Bookings by Status</h3>
+              <h3>Recent Bookings</h3>
+              <button class="btn btn-primary btn-sm" onclick="switchTab('appointments', 'Appointment Management', document.querySelector('[data-target=appointments]'))">Manage All</button>
             </div>
-            <div id="status-breakdown-bars"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>Service</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-recent-table"></tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-    </main>
+        <!-- APPOINTMENT MANAGEMENT -->
+        <section id="tab-appointments" class="tab-section">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Appointment Schedule</h3>
+              <div class="toolbar">
+                <input type="text" id="appt-search" placeholder="Search patient or service..." oninput="renderAppointments()">
+                <select id="appt-filter" onchange="renderAppointments()">
+                  <option value="All">All Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+                <button class="btn btn-primary" onclick="openModal('modal-appointment')">+ New Appointment</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient Name</th>
+                    <th>Contact</th>
+                    <th>Service</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="appointments-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PATIENT MANAGEMENT -->
+        <section id="tab-patients" class="tab-section">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Patient Records</h3>
+              <div class="toolbar">
+                <input type="text" id="patient-search" placeholder="Search patient name or phone..." oninput="renderPatients()">
+                <button class="btn btn-primary" onclick="openModal('modal-patient')">+ Add Patient</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient ID</th>
+                    <th>Full Name</th>
+                    <th>Phone / Email</th>
+                    <th>Last Visit</th>
+                    <th>Dental Notes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patients-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SERVICES MANAGEMENT -->
+        <section id="tab-services" class="tab-section">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Clinic Dental Services</h3>
+              <button class="btn btn-primary" onclick="openModal('modal-service')">+ Add Service</button>
+            </div>
+            <div class="services-grid" id="services-grid"></div>
+          </div>
+        </section>
+
+        <!-- REPORTS AND ANALYTICS -->
+        <section id="tab-reports" class="tab-section">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Completion Rate</div>
+              <div class="stat-value" id="rep-completion">0%</div>
+              <div class="stat-sub">Completed vs total bookings</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Most Requested</div>
+              <div class="stat-value" style="font-size: 1.2rem;" id="rep-top-service">-</div>
+              <div class="stat-sub">Top dental service</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Cancelled Bookings</div>
+              <div class="stat-value" id="rep-cancelled">0</div>
+              <div class="stat-sub">Total cancelled</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Active Services</div>
+              <div class="stat-value" id="rep-active-services">4</div>
+              <div class="stat-sub">Offered by clinic</div>
+            </div>
+          </div>
+
+          <div class="analytics-grid">
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3>Bookings by Service</h3>
+              </div>
+              <div id="service-breakdown-bars"></div>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3>Bookings by Status</h3>
+              </div>
+              <div id="status-breakdown-bars"></div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
   </div>
 
   <!-- MODAL: NEW APPOINTMENT -->
@@ -803,8 +931,19 @@
             <input type="date" id="new-appt-date" required>
           </div>
           <div>
-            <label>Time</label>
-            <input type="time" id="new-appt-time" required>
+            <label>Time (9 AM – 6 PM)</label>
+            <select id="new-appt-time" required>
+              <option value="9:00 AM">9:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="1:00 PM">1:00 PM</option>
+              <option value="2:00 PM">2:00 PM</option>
+              <option value="3:00 PM">3:00 PM</option>
+              <option value="4:00 PM">4:00 PM</option>
+              <option value="5:00 PM">5:00 PM</option>
+              <option value="6:00 PM">6:00 PM</option>
+            </select>
           </div>
         </div>
         <div class="modal-actions">
@@ -876,7 +1015,50 @@
   </div>
 
   <script>
-    // Default 4 Services matching your website
+    // ==========================================
+    // ADMIN CREDENTIALS (Edit here if needed)
+    // ==========================================
+    const ADMIN_USERNAME = "admin";
+    const ADMIN_PASSWORD = "teethstreet2026";
+
+    const loginScreen = document.getElementById('login-screen');
+    const adminApp = document.getElementById('admin-app');
+    const loginError = document.getElementById('login-error');
+
+    function checkAuth() {
+      if (sessionStorage.getItem('tsdc_admin_logged_in') === 'true') {
+        loginScreen.style.display = 'none';
+        adminApp.style.display = 'flex';
+        refreshAll();
+      } else {
+        loginScreen.style.display = 'flex';
+        adminApp.style.display = 'none';
+      }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = document.getElementById('admin-user').value.trim();
+      const pass = document.getElementById('admin-pass').value;
+
+      if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+        sessionStorage.setItem('tsdc_admin_logged_in', 'true');
+        loginError.style.display = 'none';
+        this.reset();
+        checkAuth();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('tsdc_admin_logged_in');
+      checkAuth();
+    }
+
+    // ==========================================
+    // CLINIC DATA & MANAGEMENT
+    // ==========================================
     const defaultServices = [
       {
         id: 1,
@@ -908,7 +1090,6 @@
       }
     ];
 
-    // Load saved data or start completely empty (0 appointments, 0 patients)
     let services = JSON.parse(localStorage.getItem('tsdc_services')) || defaultServices;
     let appointments = JSON.parse(localStorage.getItem('tsdc_appointments')) || [];
     let patients = JSON.parse(localStorage.getItem('tsdc_patients')) || [];
@@ -950,7 +1131,6 @@
       document.getElementById(id).classList.remove('open');
     }
 
-    // Render Appointments
     function renderAppointments() {
       const search = document.getElementById('appt-search').value.toLowerCase();
       const filter = document.getElementById('appt-filter').value;
@@ -1033,7 +1213,6 @@
       refreshAll();
     }
 
-    // Render Patients
     function renderPatients() {
       const search = document.getElementById('patient-search').value.toLowerCase();
       const tbody = document.getElementById('patients-table');
@@ -1095,7 +1274,6 @@
       refreshAll();
     }
 
-    // Render Services
     function renderServices() {
       const grid = document.getElementById('services-grid');
       grid.innerHTML = services.map(s => `
@@ -1151,7 +1329,6 @@
       }
     }
 
-    // Render Dashboard & Reports
     function renderDashboardAndReports() {
       const totalAppt = appointments.length;
       const pendingAppt = appointments.filter(a => a.status === 'Pending').length;
@@ -1229,7 +1406,8 @@
       renderDashboardAndReports();
     }
 
-    refreshAll();
+    // Start by checking login status
+    checkAuth();
   </script>
 </body>
 </html>
