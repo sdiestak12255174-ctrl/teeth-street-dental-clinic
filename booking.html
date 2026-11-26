@@ -1,360 +1,76 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book an Appointment - Teeth Street Dental Clinic</title>
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/booking.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book an Appointment</title>
+<style>
+:root{--purple:#6B3FA8;--purple-dark:#55308A;--tint:#F1ECF9;--bg:#F6F2FB;--ink:#2A1A4A;--mute:#5E5870;--line:#D9CCEB;--field:#8C7AA8;--error:#B3261E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.page{min-height:100vh;display:flex;justify-content:center;padding:48px 24px}
+.wrap{width:100%;max-width:600px}
+a{color:var(--purple)}
+a.back{display:inline-block;min-height:44px;line-height:44px;margin-bottom:8px;font-weight:500}
+main{background:#fff;border:1px solid var(--line);border-radius:20px;padding:40px}
+h1{margin:0 0 8px;font-size:2rem;line-height:1.2}
+.lead{margin:0 0 28px;color:var(--mute)}
+form{display:flex;flex-direction:column;gap:20px}
+.field{display:flex;flex-direction:column}
+label,legend{font-weight:600;font-size:.95rem;margin-bottom:6px;padding:0}
+input[type=text],input[type=tel],input[type=email],input[type=date],input[type=time],select{width:100%;height:48px;border:1.5px solid var(--field);border-radius:10px;padding:0 14px;font:inherit;color:var(--ink);background:#fff}
+.hint{margin:6px 0 0;font-size:.875rem;color:var(--mute)}
+.error{margin:6px 0 0;font-size:.875rem;color:var(--error);font-weight:500}
+[aria-invalid=true]{border-color:var(--error)!important}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.choice{display:flex;gap:12px;align-items:center;min-height:56px;padding:8px 14px;border:1.5px solid var(--field);border-radius:12px;background:#fff;cursor:pointer;margin:0}
+.choice input{width:20px;height:20px;margin:0;accent-color:var(--purple)}
+.choice b{display:block;font-weight:600}
+.choice small{display:block;color:var(--mute);font-size:.875rem;font-weight:400}
+.choice:has(input:checked){border:2px solid var(--purple);background:var(--tint)}
+button{height:52px;border-radius:12px;font:600 1.05rem inherit;font-family:inherit;cursor:pointer;padding:0 20px}
+.primary{border:0;background:var(--purple);color:#fff}
+.primary:hover{background:var(--purple-dark)}
+.secondary{border:1.5px solid var(--purple);background:#fff;color:var(--purple)}
+.note{margin:0;text-align:center;font-size:.875rem;color:var(--mute)}
+:focus-visible{outline:3px solid #1D4ED8;outline-offset:2px}
+/* review + success */
+dialog{border:0;border-radius:20px;padding:28px;max-width:520px;width:calc(100% - 32px)}
+dialog::backdrop{background:rgba(42,26,74,.55)}
+dl{margin:16px 0 24px;display:grid;grid-template-columns:auto 1fr;gap:8px 16px}
+dt{color:var(--mute)}dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.actions{display:flex;gap:12px}
+.actions button{flex:1}
+@media (max-width:560px){
+ .page{padding:16px}
+ main{padding:20px;border-radius:16px}
+ h1{font-size:1.625rem}
+ .row,.choices{grid-template-columns:1fr}
+ .actions{flex-direction:column-reverse}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
 <body>
+<div class="page"><div class="wrap">
+<a class="back" href="index.html">← Back to Home</a>
+<main>
+  <h1>Book an appointment</h1>
+  <p class="lead">Fill out the form and our team will confirm your schedule.</p>
 
-  <main class="page-narrow">
-    <a href="index.html" class="back-link">&larr; Back to Home</a>
-
-    <h1 class="section-title" style="text-align:left;">Book an Appointment</h1>
-    <p class="section-subtitle" style="text-align:left; margin-bottom:24px;">
-      Fill out the form and our team will confirm your schedule.
-    </p>
-
-    <div class="booking-card">
-      <form class="booking-form" id="bookingForm" novalidate>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone / Mobile Number</label>
-            <input type="tel" id="phone" placeholder="09XXXXXXXXX or 02XXXXXXXX" maxlength="11" inputmode="numeric" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" required>
-        </div>
-
-        <div class="form-group">
-          <label for="service">Service</label>
-          <select id="service" required>
-            <option value="">Select a service</option>
-            <option>General Dentistry</option>
-            <option>Orthodontics</option>
-            <option>Cosmetic Dentistry</option>
-            <option>Pediatric Dentistry</option>
-          </select>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="date">Preferred Date</label>
-            <input type="date" id="date" required>
-          </div>
-          <div class="form-group">
-            <label for="time">Preferred Time</label>
-            <input type="time" id="time" required>
-          </div>
-        </div>
-
-        <!-- Notification preference (Option A: selectable cards) -->
-        <fieldset class="form-group notify-group">
-          <legend>How should we notify you?</legend>
-          <div class="notify-options">
-            <label class="notify-option">
-              <input type="radio" name="notifyVia" value="SMS">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l1.3-3.9a9 8 0 1 1 3.4 2.9l-4.7 1"/><path d="M12 12v.01M8 12v.01M16 12v.01"/></svg>
-              <span><strong>SMS</strong><small>Text message</small></span>
-            </label>
-            <label class="notify-option">
-              <input type="radio" name="notifyVia" value="Email" checked>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6l9-6"/></svg>
-              <span><strong>Email</strong><small>Inbox</small></span>
-            </label>
-            <label class="notify-option">
-              <input type="radio" name="notifyVia" value="Both">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>
-              <span><strong>Both</strong><small>SMS and email</small></span>
-            </label>
-          </div>
-          <p class="field-hint">We'll send your confirmation and any schedule changes this way. SMS needs a mobile number (09XXXXXXXXX).</p>
-        </fieldset>
-
-        <div class="form-message" id="formMessage" role="alert"></div>
-
-        <button type="submit" class="btn btn-filled btn-submit" id="submitBtn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="5" width="18" height="16" rx="2"/>
-            <path d="M16 3v4M8 3v4M3 11h18M9 16l2 2 4-4"/>
-          </svg>
-          Review Booking
-        </button>
-        <p class="submit-hint">You'll be able to check your details before we send them.</p>
-      </form>
+  <form id="form" novalidate>
+    <div class="field">
+      <label for="name">Full name</label>
+      <input id="name" type="text" autocomplete="name" required aria-describedby="name-err">
+      <p class="error" id="name-err" hidden></p>
     </div>
-  </main>
-
-  <!-- Review / confirmation modal -->
-  <div class="modal-backdrop" id="reviewModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
-      <h2 id="reviewTitle">Please review your booking</h2>
-      <p class="modal-sub">Make sure everything is correct before confirming.</p>
-
-      <dl class="review-list">
-        <div><dt>Full name</dt><dd id="rvName"></dd></div>
-        <div><dt>Phone</dt><dd id="rvPhone"></dd></div>
-        <div><dt>Email</dt><dd id="rvEmail"></dd></div>
-        <div><dt>Service</dt><dd id="rvService"></dd></div>
-        <div><dt>Date</dt><dd id="rvDate"></dd></div>
-        <div><dt>Time</dt><dd id="rvTime"></dd></div>
-        <div><dt>Notify me by</dt><dd id="rvNotify"></dd></div>
-      </dl>
-
-      <label class="confirm-check">
-        <input type="checkbox" id="confirmCheck">
-        <span>I confirm that the information above is correct.</span>
-      </label>
-
-      <div class="modal-actions">
-        <button type="button" class="btn-edit" id="editBtn">Edit details</button>
-        <button type="button" class="btn-confirm" id="confirmBtn" disabled>Confirm Booking</button>
-      </div>
+    <div class="field">
+      <label for="phone">Phone / mobile number</label>
+      <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXXX or 02XXXXXXXX" required aria-describedby="phone-hint phone-err">
+      <p class="hint" id="phone-hint">Mobile: 09XXXXXXXXX. Landline: 02XXXXXXXX.</p>
+      <p class="error" id="phone-err" hidden></p>
     </div>
-  </div>
-
-  <script>
-    var form = document.getElementById('bookingForm');
-    var message = document.getElementById('formMessage');
-    var dateInput = document.getElementById('date');
-    var phoneInput = document.getElementById('phone');
-    var submitBtn = document.getElementById('submitBtn');
-
-    var modal = document.getElementById('reviewModal');
-    var confirmCheck = document.getElementById('confirmCheck');
-    var confirmBtn = document.getElementById('confirmBtn');
-    var editBtn = document.getElementById('editBtn');
-
-    // Holds the details being reviewed until the patient confirms
-    var pendingBooking = null;
-
-    // Hindi pwedeng pumili ng nakaraang petsa (gamit ang local date, hindi UTC)
-    var now = new Date();
-    var today = now.getFullYear() + '-' +
-      String(now.getMonth() + 1).padStart(2, '0') + '-' +
-      String(now.getDate()).padStart(2, '0');
-    dateInput.setAttribute('min', today);
-
-    // Numbers lang ang pwede i-type at hanggang 11 digits max
-    phoneInput.addEventListener('input', function () {
-      this.value = this.value.replace(/\D/g, '').slice(0, 11);
-    });
-
-    // Helper: kunin ang blocked date info mula sa Admin Clinic Schedule
-    function getBlockedDate(selectedDate) {
-      try {
-        var blockedList = JSON.parse(localStorage.getItem('blockedDates')) || [];
-        return blockedList.filter(function (item) {
-          return item.date === selectedDate;
-        })[0] || null;
-      } catch (err) {
-        return null;
-      }
-    }
-
-    // Helper: check kung may naka-book na sa eksaktong date at time (maliban sa Cancelled)
-    function isSlotTaken(selectedDate, selectedTime) {
-      var bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-      return bookings.some(function (b) {
-        return b.date === selectedDate && b.time === selectedTime && b.status !== 'Cancelled';
-      });
-    }
-
-    function showError(text) {
-      message.className = 'form-message error';
-      message.textContent = text;
-    }
-
-    function getNotifyChoice() {
-      return document.querySelector('input[name="notifyVia"]:checked').value;
-    }
-
-    function formatDate(value) {
-      var parts = value.split('-');
-      var d = new Date(parts[0], parts[1] - 1, parts[2]);
-      return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-
-    function formatTime(value) {
-      var parts = value.split(':');
-      var d = new Date(2000, 0, 1, parts[0], parts[1]);
-      return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    }
-
-    // Real-time check habang pumipili pa lang ng date ang pasyente
-    dateInput.addEventListener('change', function () {
-      var blocked = getBlockedDate(dateInput.value);
-      if (blocked) {
-        showError('Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.');
-        submitBtn.disabled = true;
-      } else {
-        message.className = 'form-message';
-        message.textContent = '';
-        submitBtn.disabled = false;
-      }
-    });
-
-    // Modal open / close
-    function openModal() {
-      confirmCheck.checked = false;
-      confirmBtn.disabled = true;
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('modal-open');
-      editBtn.focus();
-    }
-
-    function closeModal() {
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('modal-open');
-      submitBtn.focus();
-    }
-
-    confirmCheck.addEventListener('change', function () {
-      confirmBtn.disabled = !confirmCheck.checked;
-    });
-
-    editBtn.addEventListener('click', closeModal);
-
-    modal.addEventListener('click', function (e) {
-      if (e.target === modal) closeModal();
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-    });
-
-    // STEP 1: Validate, then show the review window (hindi pa nase-save dito)
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      var phoneVal = phoneInput.value.trim();
-      var isMobile = /^09\d{9}$/.test(phoneVal);       // 11 digits starting with 09
-      var isLandline = /^(0\d{7,9}|\d{7,8})$/.test(phoneVal); // 7 to 10 digits landline
-
-      if (!isMobile && !isLandline) {
-        showError('Please enter a valid 11-digit mobile number (09XXXXXXXXX) or landline number.');
-        phoneInput.focus();
-        return;
-      }
-
-      var notifyVia = getNotifyChoice();
-
-      // Ang SMS ay mobile number lang ang pwede
-      if ((notifyVia === 'SMS' || notifyVia === 'Both') && !isMobile) {
-        showError('SMS notifications need a mobile number (09XXXXXXXXX). Enter a mobile number or choose Email.');
-        phoneInput.focus();
-        return;
-      }
-
-      var selectedDate = dateInput.value;
-      var selectedTime = document.getElementById('time').value;
-
-      // 1. Check kung naka-block ang date sa Admin Panel
-      var blocked = getBlockedDate(selectedDate);
-      if (blocked) {
-        showError('Sorry, the clinic is closed on ' + blocked.date + ' (' + blocked.reason + '). Please choose another date.');
-        return;
-      }
-
-      // 2. Check kung may naka-book na sa eksaktong date at time
-      try {
-        if (isSlotTaken(selectedDate, selectedTime)) {
-          showError('That time slot is already booked. Please select a different time or date.');
-          return;
-        }
-      } catch (err) {
-        showError('Sorry, something went wrong. Please try again.');
-        return;
-      }
-
-      pendingBooking = {
-        name: document.getElementById('name').value.trim(),
-        phone: phoneVal,
-        email: document.getElementById('email').value.trim(),
-        service: document.getElementById('service').value,
-        date: selectedDate,
-        time: selectedTime,
-        notifyVia: notifyVia
-      };
-
-      message.className = 'form-message';
-      message.textContent = '';
-
-      // textContent ang gamit para ligtas sa kahit anong i-type ng pasyente
-      document.getElementById('rvName').textContent = pendingBooking.name;
-      document.getElementById('rvPhone').textContent = pendingBooking.phone;
-      document.getElementById('rvEmail').textContent = pendingBooking.email;
-      document.getElementById('rvService').textContent = pendingBooking.service;
-      document.getElementById('rvDate').textContent = formatDate(pendingBooking.date);
-      document.getElementById('rvTime').textContent = formatTime(pendingBooking.time);
-      document.getElementById('rvNotify').textContent = pendingBooking.notifyVia === 'Both' ? 'SMS and email' : pendingBooking.notifyVia;
-
-      openModal();
-    });
-
-    // STEP 2: Patient confirmed, i-save na ang booking
-    confirmBtn.addEventListener('click', function () {
-      if (!pendingBooking || !confirmCheck.checked) return;
-
-      try {
-        // Check ulit, baka may nakakuha na ng slot habang nagre-review
-        if (isSlotTaken(pendingBooking.date, pendingBooking.time)) {
-          closeModal();
-          showError('That time slot was just booked. Please select a different time or date.');
-          return;
-        }
-
-        var bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-
-        var booking = {
-          id: Date.now(),
-          name: pendingBooking.name,
-          phone: pendingBooking.phone,
-          email: pendingBooking.email,
-          service: pendingBooking.service,
-          date: pendingBooking.date,
-          time: pendingBooking.time,
-          notifyVia: pendingBooking.notifyVia,
-          status: 'Pending',
-          createdAt: new Date().toLocaleString()
-        };
-
-        bookings.push(booking);
-        localStorage.setItem('bookings', JSON.stringify(bookings));
-
-        closeModal();
-        message.className = 'form-message success';
-        message.textContent = 'Thank you, ' + booking.name + '! Your booking has been submitted. We will confirm it soon.';
-        form.reset();
-        pendingBooking = null;
-        submitBtn.disabled = false;
-        message.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } catch (err) {
-        closeModal();
-        showError('Sorry, something went wrong. Please try again.');
-      }
-    });
-  </script>
-
-</body>
-</html>
+    <div class="field">
+      <label for="email">Email</label>
