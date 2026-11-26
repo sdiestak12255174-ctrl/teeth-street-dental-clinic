@@ -50,6 +50,8 @@
       <button type="button" class="tab-btn active" data-tab="dashboard">Dashboard</button>
       <button type="button" class="tab-btn" data-tab="appointments">Appointments</button>
       <button type="button" class="tab-btn" data-tab="patients">Patients</button>
+      <!-- NEW TAB -->
+      <button type="button" class="tab-btn" data-tab="schedule">Clinic Schedule</button>
     </div>
 
     <!-- TAB: DASHBOARD -->
@@ -88,7 +90,9 @@
         </select>
         <input type="date" id="apptDate">
         <button type="button" class="btn btn-outline" id="apptClear">Clear</button>
-        <button type="button" class="btn btn-filled" id="exportBtn">Export CSV</button>
+        <!-- NEW WALK-IN BUTTON -->
+        <button type="button" class="btn btn-filled" id="addApptBtn">+ Add Appointment</button>
+        <button type="button" class="btn btn-outline" id="exportBtn">Export CSV</button>
       </div>
 
       <div class="table-wrap">
@@ -136,7 +140,85 @@
       </div>
     </section>
 
+    <!-- NEW TAB: CLINIC SCHEDULE / BLOCKED DATES -->
+    <section class="tab-panel" id="tab-schedule">
+      <div class="toolbar">
+        <input type="date" id="blockDate" required>
+        <input type="text" id="blockReason" class="grow" placeholder="Reason (e.g., Public Holiday, Dentist Unavailable, Clinic Maintenance)">
+        <button type="button" class="btn btn-filled" id="addBlockBtn">Block Date</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Blocked Date</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="blockBody"></tbody>
+        </table>
+        <div class="empty-state" id="blockEmpty" style="display:none;">No blocked dates. All clinic dates are open for booking.</div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- NEW MODAL: ADD WALK-IN APPOINTMENT -->
+  <div class="modal-overlay" id="addApptModal">
+    <div class="modal">
+      <h2>Add Walk-In Appointment</h2>
+      <p class="section-subtitle" style="text-align:left; margin-bottom:14px;">Encode walk-in or phone-in bookings directly.</p>
+      <form class="booking-form" id="addApptForm">
+        <div class="form-group">
+          <label for="newApptName">Full Name</label>
+          <input type="text" id="newApptName" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="newApptPhone">Phone</label>
+            <input type="tel" id="newApptPhone" required>
+          </div>
+          <div class="form-group">
+            <label for="newApptEmail">Email (Optional)</label>
+            <input type="email" id="newApptEmail">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="newApptService">Service</label>
+          <select id="newApptService" required>
+            <option>General Dentistry</option>
+            <option>Orthodontics</option>
+            <option>Cosmetic Dentistry</option>
+            <option>Pediatric Dentistry</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="newApptDate">Date</label>
+            <input type="date" id="newApptDate" required>
+          </div>
+          <div class="form-group">
+            <label for="newApptTime">Time</label>
+            <input type="time" id="newApptTime" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="newApptStatus">Status</label>
+          <select id="newApptStatus" required>
+            <option selected>Confirmed</option>
+            <option>Pending</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-filled">Save Appointment</button>
+          <button type="button" class="btn btn-outline" id="addApptCancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- MODAL: EDIT APPOINTMENT -->
   <div class="modal-overlay" id="apptModal">
