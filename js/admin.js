@@ -1,5 +1,5 @@
-// Admin modules: Dashboard, Appointments, Patients
-// Gumagamit ng localStorage keys: "bookings" (galing sa booking form) at "patients"
+// Admin modules: Dashboard, Appointments, Patients, Clinic Schedule
+// Gumagamit ng localStorage keys: "bookings", "patients", at "blockedDates"
 
 (function () {
   var ADMIN_USER = 'admin';
@@ -251,6 +251,64 @@
     renderAll();
   });
 
+  // NEW FEATURE 1: Add Walk-in Appointment (modal)
+  var addApptModal = $('addApptModal');
+
+  $('addApptBtn').addEventListener('click', function () {
+    $('addApptForm').reset();
+    $('newApptDate').value = todayString();
+    $('newApptStatus').value = 'Confirmed';
+    addApptModal.classList.add('open');
+  });
+
+  $('addApptCancel').addEventListener('click', function () {
+    addApptModal.classList.remove('open');
+  });
+
+  $('addApptForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var dateVal = $('newApptDate').value;
+    var timeVal = $('newApptTime').value;
+
+    // Check kung naka-block ang date
+    var blocked = load('blockedDates').filter(function (x) { return x.date === dateVal; })[0];
+    if (blocked) {
+      alert('Cannot book on ' + dateVal + '. Clinic is closed (' + blocked.reason + ').');
+      return;
+    }
+
+    // Check kung may existing booking sa parehong date at time
+    var bookings = load('bookings');
+    var conflict = bookings.some(function (b) {
+      return b.date === dateVal && b.time === timeVal && b.status !== 'Cancelled';
+    });
+    if (conflict && !confirm('Another appointment already exists at this date and time. Proceed anyway?')) {
+      return;
+    }
+
+    var newBooking = {
+      id: Date.now(),
+      name: $('newApptName').value.trim(),
+      phone: $('newApptPhone').value.trim(),
+      email: $('newApptEmail').value.trim(),
+      service: $('newApptService').value,
+      date: dateVal,
+      time: timeVal,
+      status: $('newApptStatus').value,
+      createdAt: new Date().toLocaleString()
+    };
+
+    bookings.push(newBooking);
+    save('bookings', bookings);
+
+    if (newBooking.status === 'Confirmed' || newBooking.status === 'Completed') {
+      ensurePatient(newBooking);
+    }
+
+    addApptModal.classList.remove('open');
+    renderAll();
+  });
+
   // Edit appointment (modal)
   var apptModal = $('apptModal');
 
@@ -416,11 +474,67 @@
     }
   });
 
+  // ---------- NEW FEATURE 2: Clinic Schedule (Blocked Dates) ----------
+  function renderBlockedDates() {
+    var list = load('blockedDates').sort(function (a, b) {
+      return String(a.date).localeCompare(String(b.date));
+    });
+    var body = $('blockBody');
+    body.innerHTML = '';
+    $('blockEmpty').style.display = list.length === 0 ? 'block' : 'none';
+
+    list.forEach(function (item) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td><strong>' + escapeHtml(item.date) + '</strong></td>' +
+        '<td>' + escapeHtml(item.reason) + '</td>' +
+        '<td><span class="status cancelled">Closed / Blocked</span></td>' +
+        '<td><button class="action-btn danger" data-action="unblock" data-id="' + item.id + '">Unblock</button></td>';
+      body.appendChild(tr);
+    });
+  }
+
+  $('addBlockBtn').addEventListener('click', function () {
+    var dateVal = $('blockDate').value;
+    var reasonVal = $('blockReason').value.trim() || 'Clinic Closed';
+
+    if (!dateVal) {
+      alert('Please select a date to block.');
+      return;
+    }
+
+    var list = load('blockedDates');
+    if (list.some(function (x) { return x.date === dateVal; })) {
+      alert('This date is already blocked.');
+      return;
+    }
+
+    list.push({
+      id: Date.now(),
+      date: dateVal,
+      reason: reasonVal
+    });
+    save('blockedDates', list);
+    $('blockDate').value = '';
+    $('blockReason').value = '';
+    renderBlockedDates();
+  });
+
+  $('blockBody').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-action="unblock"]');
+    if (!btn) return;
+    var id = Number(btn.getAttribute('data-id'));
+    if (!confirm('Re-open this date for appointments?')) return;
+    save('blockedDates', load('blockedDates').filter(function (x) { return x.id !== id; }));
+    renderBlockedDates();
+  });
+
   // ---------- Render all ----------
   function renderAll() {
     renderDashboard();
     renderAppointments();
     renderPatients();
+    renderBlockedDates();
   }
 
   // Kung naka-login pa sa session na ito
