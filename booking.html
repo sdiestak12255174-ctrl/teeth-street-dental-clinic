@@ -129,15 +129,25 @@
       background-color: #522999;
     }
 
+    .success-banner {
+      display: none;
+      background-color: #e7f8ef;
+      color: #137a45;
+      border: 1px solid #b7ebd0;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 18px;
+    }
+
     @media (max-width: 600px) {
       .form-row {
         grid-template-columns: 1fr;
       }
-
       .booking-card {
         padding: 24px 20px;
       }
-
       .btn-submit {
         width: 100%;
       }
@@ -154,7 +164,11 @@
     </header>
 
     <div class="booking-card">
-      <form action="#" method="POST" class="booking-form">
+      <div class="success-banner" id="success-banner">
+        Appointment submitted! Our team will confirm your schedule shortly.
+      </div>
+
+      <form id="booking-form" class="booking-form">
         <div class="form-row">
           <div class="form-group">
             <label for="full-name">Full Name</label>
@@ -186,12 +200,10 @@
           <label for="service">Service</label>
           <select id="service" name="service" required>
             <option value="" disabled selected>Select a service</option>
-            <option value="cleaning">Oral Prophylaxis (Cleaning)</option>
-            <option value="consultation">Dental Check-up & Consultation</option>
-            <option value="filling">Tooth Restoration (Pasta)</option>
-            <option value="extraction">Tooth Extraction (Bunot)</option>
-            <option value="whitening">Teeth Whitening</option>
-            <option value="braces">Orthodontics / Braces</option>
+            <option value="General Dentistry">General Dentistry</option>
+            <option value="Orthodontics">Orthodontics</option>
+            <option value="Cosmetic Dentistry">Cosmetic Dentistry</option>
+            <option value="Pediatric Dentistry">Pediatric Dentistry</option>
           </select>
         </div>
 
@@ -217,24 +229,63 @@
     const phoneHint = document.getElementById('phone-hint');
 
     phoneInput.addEventListener('input', function () {
-      // Tanggalin ang anumang hindi numero (letters, spaces, symbols)
       let digits = this.value.replace(/\D/g, '');
-
       if (digits.startsWith('09')) {
-        // Mobile number: hanggang 11 digits lang
         digits = digits.slice(0, 11);
         phoneHint.textContent = `Mobile number (${digits.length}/11 digits)`;
       } else if (digits.startsWith('0')) {
-        // Landline (gaya ng 02XXXXXXXX): hanggang 10 digits lang
         digits = digits.slice(0, 10);
         phoneHint.textContent = `Landline number (${digits.length}/10 digits)`;
       } else {
-        // Default limit kung hindi pa nagsisimula sa 0
         digits = digits.slice(0, 11);
         phoneHint.textContent = 'Mobile: 11 digits (09...) | Landline: 10 digits (02...)';
       }
-
       this.value = digits;
+    });
+
+    // Save booking to localStorage so it appears in admin.html
+    document.getElementById('booking-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const fullName = document.getElementById('full-name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const service = document.getElementById('service').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+
+      const appointments = JSON.parse(localStorage.getItem('tsdc_appointments') || '[]');
+      appointments.unshift({
+        id: Date.now(),
+        name: fullName,
+        phone: phone,
+        email: email,
+        service: service,
+        date: date,
+        time: time,
+        status: 'Pending'
+      });
+      localStorage.setItem('tsdc_appointments', JSON.stringify(appointments));
+
+      // Also save to patient list if not existing
+      const patients = JSON.parse(localStorage.getItem('tsdc_patients') || '[]');
+      const exists = patients.some(p => p.name.toLowerCase() === fullName.toLowerCase() || p.phone === phone);
+      if (!exists) {
+        const nextNum = String(patients.length + 1).padStart(3, '0');
+        patients.unshift({
+          id: 'PT-' + nextNum,
+          name: fullName,
+          phone: phone,
+          email: email,
+          lastVisit: date,
+          notes: 'Booked ' + service
+        });
+        localStorage.setItem('tsdc_patients', JSON.stringify(patients));
+      }
+
+      document.getElementById('success-banner').style.display = 'block';
+      this.reset();
+      phoneHint.textContent = 'Mobile: 11 digits (09...) | Landline: 10 digits (02...)';
     });
   </script>
 </body>
