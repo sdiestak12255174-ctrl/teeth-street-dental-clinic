@@ -28,8 +28,8 @@
             <input type="text" id="name" required>
           </div>
           <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" required>
+            <label for="phone">Phone / Mobile Number</label>
+            <input type="tel" id="phone" placeholder="09XXXXXXXXX or 02XXXXXXXX" maxlength="11" inputmode="numeric" required>
           </div>
         </div>
 
@@ -71,11 +71,17 @@
     var form = document.getElementById('bookingForm');
     var message = document.getElementById('formMessage');
     var dateInput = document.getElementById('date');
+    var phoneInput = document.getElementById('phone');
     var submitBtn = document.getElementById('submitBtn');
 
     // Hindi pwedeng pumili ng nakaraang petsa
     var today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
+
+    // Numbers lang ang pwede i-type at hanggang 11 digits max
+    phoneInput.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 11);
+    });
 
     // Helper: kunin ang blocked date info mula sa Admin Clinic Schedule
     function getBlockedDate(selectedDate) {
@@ -106,6 +112,17 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
+      var phoneVal = phoneInput.value.trim();
+      var isMobile = /^09\d{9}$/.test(phoneVal);       // 11 digits starting with 09
+      var isLandline = /^(0\d{7,9}|\d{7,8})$/.test(phoneVal); // 7 to 10 digits landline
+
+      if (!isMobile && !isLandline) {
+        message.className = 'form-message error';
+        message.textContent = 'Please enter a valid 11-digit mobile number (09XXXXXXXXX) or landline number.';
+        phoneInput.focus();
+        return;
+      }
+
       var selectedDate = dateInput.value;
       var selectedTime = document.getElementById('time').value;
 
@@ -134,7 +151,7 @@
         var booking = {
           id: Date.now(),
           name: document.getElementById('name').value.trim(),
-          phone: document.getElementById('phone').value.trim(),
+          phone: phoneVal,
           email: document.getElementById('email').value.trim(),
           service: document.getElementById('service').value,
           date: selectedDate,
