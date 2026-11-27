@@ -1090,10 +1090,38 @@
       }
     ];
 
-    let services = JSON.parse(localStorage.getItem('tsdc_services')) || defaultServices;
-    let appointments = JSON.parse(localStorage.getItem('tsdc_appointments')) || [];
-    let patients = JSON.parse(localStorage.getItem('tsdc_patients')) || [];
+  const defaultAppointments = [
+      {
+        id: 1795744950613,
+        name: "Catherine Doctor",
+        phone: "09123456789",
+        email: "catherinedoctor@gmail.com",
+        service: "General Dentistry",
+        date: "2026-11-27",
+        time: "2:00 PM",
+        status: "Pending"
+      }
+    ];
 
+    const defaultPatients = [
+      {
+        id: "PT-001",
+        name: "Catherine Doctor",
+        phone: "09123456789",
+        email: "catherinedoctor@gmail.com",
+        lastVisit: "2026-11-27",
+        notes: "Booked General Dentistry"
+      }
+    ];
+
+    let services = JSON.parse(localStorage.getItem('tsdc_services')) || defaultServices;
+    let appointments = JSON.parse(localStorage.getItem('tsdc_appointments')) || defaultAppointments;
+    let patients = JSON.parse(localStorage.getItem('tsdc_patients')) || defaultPatients;
+
+    appointments.forEach(a => { if (a.date === '2026-11-28') a.date = '2026-11-27'; });
+    patients.forEach(p => { if (p.lastVisit === '2026-11-28') p.lastVisit = '2026-11-27'; });
+    localStorage.setItem('tsdc_appointments', JSON.stringify(appointments));
+    localStorage.setItem('tsdc_patients', JSON.stringify(patients));
     function saveData() {
       localStorage.setItem('tsdc_services', JSON.stringify(services));
       localStorage.setItem('tsdc_appointments', JSON.stringify(appointments));
